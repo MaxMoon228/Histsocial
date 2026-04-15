@@ -1,0 +1,8 @@
+{% for event in events %}
+  {% include "includes/components/event_card.html" %}
+{% empty %}
+  <article class="card">
+    <h3>События не найдены</h3>
+    <p>Попробуйте выбрать другой день или диапазон.</p>
+  </article>
+{% endfor %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Умная историческая ось — Истобщество{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/axis.css' %}">{% endblock %}
+{% block content %}
+<section class="hero hero-dark axis-hero">
+  <div class="container">
+    <h1>Умная историческая ось</h1>
+    <p>Найдите тему, эпоху, событие или деятеля — увидьте его место в истории</p>
+    <form id="axis-form" class="axis-filter-form" hx-get="/htmx/axis/results/" hx-target="#axis-results">
+      <div class="axis-toggle-row">
+        <div class="axis-toggle" data-axis-toggle="scope">
+          <button type="button" data-value="russia" class="{% if selected_scope == 'russia' %}is-active{% endif %}">Россия</button>
+          <button type="button" data-value="world" class="{% if selected_scope == 'world' %}is-active{% endif %}">Мир</button>
+          <button type="button" data-value="both" class="{% if selected_scope == 'both' %}is-active{% endif %}">Всё</button>
+        </div>
+        <div class="axis-toggle" data-axis-toggle="scale">
+          <button type="button" data-value="year" class="{% if selected_scale == 'year' %}is-active{% endif %}">Год</button>
+          <button type="button" data-value="decade" class="{% if selected_scale == 'decade' %}is-active{% endif %}">Десятилетие</button>
+          <button type="button" data-value="century" class="{% if selected_scale == 'century' %}is-active{% endif %}">Век</button>
+          <button type="button" data-value="era" class="{% if selected_scale == 'era' %}is-active{% endif %}">Эпоха</button>
+        </div>
+      </div>
+      <input type="hidden" name="scope" id="axis-scope" value="{{ selected_scope }}">
+      <input type="hidden" name="scale" id="axis-scale" value="{{ selected_scale }}">
+      <div class="search-form axis-form">
+        <input type="text" name="q" value="{{ selected_q }}" placeholder="Введите тему, дату, событие, правителя или эпоху...">
+        <button class="btn">Показать на оси</button>
+      </div>
+      <div class="chips chips-dark"><span>Пётр I</span><span>Смутное время</span><span>Холодная война</span><span>1812 год</span></div>
+    </form>
+  </div>
+</section>
+<section class="axis-section">
+  <div class="container section axis-section-inner">
+    {% if request.user.is_authenticated and request.user.is_staff %}
+      <div class="staff-section-toolbar">
+        <button class="btn" hx-get="/staff/axis-nodes/create/" hx-target="#staff-editor-body">Добавить точку</button>
+        <a class="btn btn-outline" href="/admin/axis/timelinenode/" target="_blank" rel="noopener">Точки в Django admin</a>
+      </div>
+    {% endif %}
+    <div id="axis-results" class="axis-results-wrap">
+      {% include "axis/partials/timeline.html" with nodes=nodes active_node_id=active_node.id|default:0 %}
+    </div>
+    <div id="axis-detail" class="axis-detail-wrap">
+      {% include "axis/partials/node_detail.html" with node=active_node materials=active_node_context.materials tests=active_node_context.tests related_tags=active_node_context.related_tags period_left=active_node_context.period_left period_right=active_node_context.period_right materials_count=active_node_context.materials_count tests_count=active_node_context.tests_count persons_count=active_node_context.persons_count %}
+    </div>
+  </div>
+</section>
+{% endblock %}

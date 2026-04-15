@@ -1,0 +1,29 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="/">
+      <span class="logo-mark">И</span>
+      <span>
+        <strong>{{ site_name }}</strong>
+        <small>{{ site_tagline }}</small>
+      </span>
+    </a>
+    <nav class="main-nav">
+      <a class="{% if request.path == '/' %}is-active{% endif %}" href="/">Главная</a>
+      <a class="{% if request.path == '/world/' %}is-active{% endif %}" href="/world/">Всеобщая история</a>
+      <a class="{% if request.path == '/russia/' %}is-active{% endif %}" href="/russia/">История России</a>
+      <a class="{% if request.path == '/social/' %}is-active{% endif %}" href="/social/">Обществознание</a>
+      <a class="{% if request.path == '/tests/' %}is-active{% endif %}" href="/tests/">Тестирования</a>
+      <a class="{% if request.path == '/calendar/' %}is-active{% endif %}" href="/calendar/">Календарь</a>
+      <a class="{% if request.path == '/about/' %}is-active{% endif %}" href="/about/">О проекте</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-axis" href="/axis/">Историческая ось</a>
+      {% if request.user.is_authenticated and request.user.is_staff %}
+        <a class="btn btn-staff" href="/staff/">Панель</a>
+      {% else %}
+        <a class="btn btn-staff" href="/staff/login/?next={{ request.path|urlencode }}">Вход</a>
+      {% endif %}
+      <a class="icon-btn icon-favorites" href="/favorites/" aria-label="Избранное">🔖 {% include "includes/components/favorites_counter.html" %}</a>
+    </div>
+  </div>
+</header>

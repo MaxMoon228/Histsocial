@@ -1,0 +1,45 @@
+<article class="card event-card">
+  <div class="card-head">
+    <span class="pill">{{ event.get_event_type_display }}</span>
+    <span class="pill muted">{{ event.get_scope_display }}</span>
+    {% if request.user.is_authenticated and request.user.is_staff %}
+      <div class="staff-card-tools-inline">
+        <button class="icon-btn" hx-get="/staff/events/{{ event.id }}/edit/" hx-target="#staff-editor-body" aria-label="Редактировать событие">✎</button>
+        <button
+          class="icon-btn"
+          hx-post="/staff/events/{{ event.id }}/toggle-publish/"
+          hx-target="closest article"
+          hx-swap="outerHTML"
+          title="Опубликовать/Скрыть"
+        >
+          {% if event.is_published %}👁{% else %}🚫{% endif %}
+        </button>
+      </div>
+    {% endif %}
+  </div>
+  <h3>{% if event.day and event.month %}{{ event.day }}.{{ event.month }} · {% endif %}{{ event.title }}</h3>
+  <p>{{ event.summary|default:event.related_topic_text|truncatechars:140 }}</p>
+  <div class="card-footer">
+    <small>{% if event.year %}{{ event.year }} · {% endif %}{{ event.source.name }}</small>
+    <a
+      class="btn js-external-go"
+      href="/go/event/{{ event.id }}/"
+      data-item-title="{{ event.title }}"
+      data-source-domain="{{ event.source_domain|default:event.source.domain|default:event.source.name }}"
+      data-content-label="событию"
+    >Оригинал</a>
+    {% if event.id in favorites_state.events %}
+      {% include "includes/components/favorite_button.html" with item_type="events" item_id=event.id is_saved=True %}
+    {% else %}
+      {% include "includes/components/favorite_button.html" with item_type="events" item_id=event.id is_saved=False %}
+    {% endif %}
+  </div>
+  {% if request.user.is_authenticated and request.user.is_staff %}
+    <small class="staff-meta">
+      Импорт: {{ event.get_import_status_display }} ·
+      <button type="button" class="btn btn-outline btn-xs" hx-post="/staff/events/{{ event.id }}/duplicate/" hx-confirm="Создать копию события?" hx-swap="none">Дублировать</button>
+      <button type="button" class="btn btn-outline btn-xs" hx-post="/staff/events/{{ event.id }}/delete/" hx-confirm="Удалить событие?" hx-swap="none">Удалить</button>
+      <a href="/admin/events/historicalevent/{{ event.id }}/change/" target="_blank" rel="noopener">Редактировать в admin</a>
+    </small>
+  {% endif %}
+</article>

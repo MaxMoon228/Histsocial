@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}О проекте — Истобщество{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/about.css' %}">{% endblock %}
+{% block content %}
+<section class="hero hero-dark">
+  <div class="container">
+    {% include "includes/components/breadcrumbs.html" with current="О проекте" %}
+    <p class="section-label">О проекте</p>
+    <h1>{{ site_name }}</h1>
+    <p class="lead">{{ site_tagline }}</p>
+  </div>
+</section>
+<section class="container section split">
+  <div>
+    <p>{{ site_name }} не публикует собственные учебники. Платформа агрегирует внешние материалы, тесты и события, помогает быстро находить релевантные источники и связывает их в единый учебный контекст.</p>
+    <p>Ключевые модули: каталоги материалов, календарь исторических событий, подборка тестов и умная историческая ось.</p>
+  </div>
+  <div class="stats-grid">
+    <article class="card"><h3>{{ stats.materials }}+</h3><p>Учебных материалов</p></article>
+    <article class="card"><h3>{{ stats.tests }}+</h3><p>Тестов и тренажёров</p></article>
+    <article class="card"><h3>{{ stats.events }}+</h3><p>Событий в календаре</p></article>
+  </div>
+</section>
+{% endblock %}

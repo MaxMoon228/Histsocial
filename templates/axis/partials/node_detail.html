@@ -1,0 +1,91 @@
+{% if node %}
+<div class="axis-detail-grid">
+  <aside class="axis-detail-main card">
+    <div class="axis-detail-head">
+      <span class="pill">{{ node.linked_event.get_event_type_display|default:"Событие" }}</span>
+      <strong>{{ node.display_year_text }}</strong>
+    </div>
+    <h3>{{ node.title }}</h3>
+    <p>{{ node.description|default:node.subtitle }}</p>
+    {% if related_tags %}
+      <div class="chips axis-detail-tags">
+        {% for tag in related_tags %}<span>{{ tag }}</span>{% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="axis-stats">
+      <div><strong>{{ materials_count }}</strong><small>Учебники</small></div>
+      <div><strong>{{ tests_count }}</strong><small>Тесты</small></div>
+      <div><strong>{{ persons_count }}</strong><small>Персоны</small></div>
+    </div>
+
+    <div class="axis-period">
+      <span>{{ period_left }}</span>
+      <span>{{ period_right }}</span>
+    </div>
+    {% if request.user.is_authenticated and request.user.is_staff %}
+      <div class="staff-card-actions">
+        <button class="btn btn-outline btn-xs" hx-get="/staff/axis-nodes/{{ node.id }}/edit/" hx-target="#staff-editor-body">Редактировать</button>
+        <button class="btn btn-outline btn-xs" hx-post="/staff/axis-nodes/{{ node.id }}/duplicate/" hx-swap="none">Дублировать</button>
+        <button class="btn btn-outline btn-xs" hx-post="/staff/axis-nodes/{{ node.id }}/delete/" hx-confirm="Удалить точку оси?" hx-swap="none">Удалить</button>
+      </div>
+    {% endif %}
+  </aside>
+
+  <section class="axis-detail-content">
+    <h3>Учебные материалы по теме</h3>
+    <div class="axis-detail-list">
+      {% for material in materials %}
+        <article class="axis-mini-card">
+          <div class="axis-mini-head">
+            <span>{{ material.get_level_display }}</span>
+            <span>Внешний</span>
+          </div>
+          <h4>{{ material.title }}</h4>
+          <p>{{ material.short_description|truncatechars:90 }}</p>
+          <div class="axis-mini-foot">
+            <small>{{ material.source.name }}</small>
+            <a
+              class="js-external-go"
+              href="/go/material/{{ material.id }}/"
+              data-item-title="{{ material.title }}"
+              data-source-domain="{{ material.source.domain|default:material.source.name }}"
+              data-content-label="материалу"
+            >→</a>
+          </div>
+        </article>
+      {% empty %}
+        <article class="axis-mini-card"><p>Материалы пока не добавлены.</p></article>
+      {% endfor %}
+    </div>
+
+    <h3>Тесты по теме</h3>
+    <div class="axis-detail-list axis-test-list">
+      {% for test in tests %}
+        <article class="axis-mini-card">
+          <div class="axis-mini-head">
+            <span>{{ test.get_exam_type_display }}</span>
+            <span>{{ test.get_difficulty_display }}</span>
+          </div>
+          <h4>{{ test.title }}</h4>
+          <p>{{ test.short_description|truncatechars:90 }}</p>
+          <div class="axis-mini-foot">
+            <small>{{ test.source.name }}</small>
+            <a
+              class="js-external-go"
+              href="/go/test/{{ test.id }}/"
+              data-item-title="{{ test.title }}"
+              data-source-domain="{{ test.source.domain|default:test.source.name }}"
+              data-content-label="тесту"
+            >→</a>
+          </div>
+        </article>
+      {% empty %}
+        <article class="axis-mini-card"><p>Тесты пока не добавлены.</p></article>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% else %}
+<article class="card axis-empty"><h3>Ничего не найдено</h3><p>Измените параметры фильтра и повторите запрос.</p></article>
+{% endif %}

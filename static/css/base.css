@@ -1,0 +1,67 @@
+:root {
+  --background-main: #f9f6ef;
+  --background-card: #fffcf7;
+  --background-hero-dark: #13263c;
+  --text-primary: #1c2b3d;
+  --text-secondary: #5b6678;
+  --accent-burgundy: #6c253b;
+  --accent-gold: #b98e3f;
+  --accent-blue: #1b79da;
+  --accent-green: #2d8f48;
+  --card-border: #e6dece;
+  --chip-bg: #ebe4d7;
+  --footer-bg: #13263c;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --shadow-soft: 0 12px 30px rgba(34, 38, 48, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background-main);
+  color: var(--text-primary);
+  font-family: "Inter", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Cormorant Garamond", serif;
+  margin: 0 0 14px;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 4.3vw, 4.35rem);
+  line-height: 1.03;
+}
+
+h2 {
+  font-size: clamp(1.9rem, 3.1vw, 3rem);
+}
+
+h3 {
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+}
+
+p {
+  margin: 0 0 14px;
+  color: var(--text-secondary);
+  line-height: 1.52;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}

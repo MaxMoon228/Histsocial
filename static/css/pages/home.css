@@ -1,0 +1,33 @@
+.home-hero { min-height: 540px; display: flex; align-items: center; }
+.home-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+.hero-content { max-width: 920px; }
+.hero-subtitle { font-size: 1.25rem; color: #c8d0db; max-width: 760px; }
+.hero-search-wrap { max-width: 760px; margin-top: 18px; }
+.home-hero .search-form input { background: #fffcf5; font-size: 1.15rem; padding: 15px 18px; }
+.home-hero .search-form .btn { padding: 12px 30px; }
+.section-head { border-top: 1px solid #ede2cf; }
+.author-card {
+  background: rgba(247, 253, 255, 0.1);
+  border: 1px solid rgba(178, 203, 223, 0.4);
+  border-radius: 18px;
+  padding: 18px;
+  color: #e4edf6;
+}
+.author-card p {
+  color: #d9e5f2;
+}
+.author-card .section-label {
+  color: #9ecad5;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1279px) {
+  .home-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Staff-панель — {{ site_name }}{% endblock %}
+{% block content %}
+<section class="container section">
+  <div class="page-head page-head-inline">
+    <div>
+      <p class="section-label">Редакторский центр</p>
+      <h1>Staff-панель</h1>
+      <p>Быстрый доступ к контенту и управлению публикацией.</p>
+    </div>
+    <div class="staff-dashboard-actions">
+      <a class="btn btn-outline" href="/admin/">Django admin</a>
+      <a class="btn" href="/staff/materials/create/?section=world" hx-get="/staff/materials/create/?section=world" hx-target="#staff-editor-body">Добавить карточку</a>
+      <a class="btn btn-outline" href="/staff/logout/">Выйти</a>
+    </div>
+  </div>
+
+  <div class="staff-stats-grid">
+    <article class="card"><h3>{{ total_cards }}</h3><p>Всего карточек</p></article>
+    <article class="card"><h3>{{ published_cards }}</h3><p>Опубликовано</p></article>
+    <article class="card"><h3>{{ draft_cards }}</h3><p>Черновики/скрытые</p></article>
+    <article class="card"><h3>{{ archived_cards }}</h3><p>Архив</p></article>
+  </div>
+
+  <div class="staff-shortcuts">
+    <a class="card" href="/world/">Всеобщая история</a>
+    <a class="card" href="/russia/">История России</a>
+    <a class="card" href="/social/">Обществознание</a>
+    <a class="card" href="/calendar/">Календарь событий</a>
+    <a class="card" href="/admin/">Django admin</a>
+  </div>
+
+  <div class="staff-stats-grid">
+    <article class="card"><h3>{{ without_tags_cards }}</h3><p>Без тегов</p></article>
+    <article class="card"><h3>{{ without_cover_cards }}</h3><p>Без обложки</p></article>
+    <article class="card"><h3>{{ without_url_cards }}</h3><p>Без ссылки/файла</p></article>
+  </div>
+
+  <article class="card">
+    <h2>Недавно измененные</h2>
+    <div class="table-wrap">
+      <table class="staff-table">
+        <thead>
+          <tr><th>Материал</th><th>Раздел</th><th>Статус</th><th>Обновлено</th><th>Автор</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for material in recent_materials %}
+            <tr>
+              <td>{{ material.title }}</td>
+              <td>{{ material.get_section_display }}</td>
+              <td>
+                {% if material.is_archived %}Архив
+                {% elif material.is_published %}Опубликовано
+                {% else %}Черновик{% endif %}
+              </td>
+              <td>{{ material.updated_at|date:"d.m.Y H:i" }}</td>
+              <td>{{ material.updated_by|default:"—" }}</td>
+              <td><button class="btn btn-outline btn-sm" hx-get="/staff/materials/{{ material.id }}/edit/" hx-target="#staff-editor-body">Редактировать</button></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6">Пока нет изменений.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>
+{% endblock %}

@@ -1,0 +1,27 @@
+<article class="card test-card">
+  <div class="card-head">
+    <span class="pill">{{ test.get_exam_type_display }}</span>
+    <span class="pill muted">{{ test.get_task_type_display }}</span>
+    <span class="pill muted">{{ test.get_difficulty_display }}</span>
+  </div>
+  <h3>{{ test.title }}</h3>
+  <p>{{ test.short_description|truncatechars:96 }}</p>
+  <div class="tags">
+    {% for tag in test.tags.all|slice:":4" %}<span>{{ tag.name }}</span>{% endfor %}
+  </div>
+  <div class="card-footer">
+    <small>{{ test.source.name }} · {{ test.duration_minutes }} мин</small>
+    <a
+      class="btn js-external-go"
+      href="/go/test/{{ test.id }}/"
+      data-item-title="{{ test.title }}"
+      data-source-domain="{{ test.source.domain|default:test.source.name }}"
+      data-content-label="тесту"
+    >Перейти к тесту</a>
+    {% if test.id in favorites_state.tests %}
+      {% include "includes/components/favorite_button.html" with item_type="tests" item_id=test.id is_saved=True %}
+    {% else %}
+      {% include "includes/components/favorite_button.html" with item_type="tests" item_id=test.id is_saved=False %}
+    {% endif %}
+  </div>
+</article>

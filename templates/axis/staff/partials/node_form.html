@@ -1,0 +1,48 @@
+<form
+  method="post"
+  class="staff-material-form"
+  hx-post="{% if is_create %}/staff/axis-nodes/create/{% else %}/staff/axis-nodes/{{ node.id }}/edit/{% endif %}"
+  hx-target="#staff-editor-body"
+  data-staff-form
+>
+  {% csrf_token %}
+  <div class="staff-form-scroll">
+    <h3>Основное</h3>
+    {% if form.non_field_errors %}<div class="staff-error">{{ form.non_field_errors }}</div>{% endif %}
+    <label>Заголовок *</label>{{ form.title }}
+    <label>Slug *</label>{{ form.slug }}
+    <label>Подзаголовок</label>{{ form.subtitle }}
+    <label>Описание</label>{{ form.description }}
+    <label>Область</label>{{ form.scope }}
+    <label>Масштаб</label>{{ form.scale }}
+
+    <h3>Хронология</h3>
+    <label>Начальный год *</label>{{ form.start_year }}
+    <label>Конечный год</label>{{ form.end_year }}
+    <label>Текст периода</label>{{ form.display_year_text }}
+    <label>Порядок</label>{{ form.position_order }}
+    <label>Цвет точки</label>{{ form.accent_color }}
+
+    <h3>Связи</h3>
+    <label>Связанное событие</label>{{ form.linked_event }}
+    <label>Связанный материал</label>{{ form.linked_material }}
+    <label>Связанный тест</label>{{ form.linked_test }}
+    <label>Теги</label>{{ form.tags }}
+    <label>Новые теги</label>{{ form.new_tags }}
+
+    <h3>Публикация</h3>
+    <label>Featured {{ form.is_featured }}</label>
+    <label>Опубликовано {{ form.is_published }}</label>
+  </div>
+  <div class="staff-drawer-footer">
+    <button class="btn" type="submit">Сохранить</button>
+    <button class="btn btn-outline" type="submit" name="continue_edit" value="1">Сохранить и продолжить</button>
+    {% if node.id %}
+      <button type="button" class="btn btn-outline" hx-post="/staff/axis-nodes/{{ node.id }}/duplicate/" hx-confirm="Создать копию точки?" hx-swap="none">Дублировать</button>
+      <button type="button" class="btn btn-outline" hx-post="/staff/axis-nodes/{{ node.id }}/toggle-publish/" hx-swap="none">Публикация</button>
+      <button type="button" class="btn btn-outline" hx-post="/staff/axis-nodes/{{ node.id }}/delete/" hx-confirm="Удалить точку?" hx-swap="none">Удалить</button>
+      <a class="btn btn-outline" href="/admin/axis/timelinenode/{{ node.id }}/change/" target="_blank" rel="noopener">В Django admin</a>
+    {% endif %}
+    <button type="button" class="btn btn-outline" data-staff-close>Отменить</button>
+  </div>
+</form>

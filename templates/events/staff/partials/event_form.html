@@ -1,0 +1,59 @@
+<form
+  method="post"
+  enctype="multipart/form-data"
+  class="staff-material-form"
+  hx-post="{% if is_create %}/staff/events/create/{% else %}/staff/events/{{ event.id }}/edit/{% endif %}"
+  hx-target="#staff-editor-body"
+  data-staff-form
+>
+  {% csrf_token %}
+  <div class="staff-form-scroll">
+    <h3>Основное</h3>
+    {% if form.non_field_errors %}<div class="staff-error">{{ form.non_field_errors }}</div>{% endif %}
+    <label>Заголовок *</label>{{ form.title }}
+    <label>Slug *</label>{{ form.slug }}
+    <label>Источник</label>{{ form.source }}
+    <label>URL источника</label>{{ form.source_url }}
+    <label>Canonical URL</label>{{ form.canonical_url }}
+    <label>Домен источника</label>{{ form.source_domain }}
+
+    <h3>Контент</h3>
+    <label>Краткое описание</label>{{ form.summary }}
+    <label>Полный текст</label>{{ form.full_text }}
+    <label>Тема</label>{{ form.related_topic_text }}
+    <label>Тип события</label>{{ form.event_type }}
+    <label>Область</label>{{ form.scope }}
+
+    <h3>Дата</h3>
+    <label>Текст даты</label>{{ form.display_date_text }}
+    <label>День</label>{{ form.day }}
+    <label>Месяц</label>{{ form.month }}
+    <label>Год</label>{{ form.year }}
+    <label>Точность даты</label>{{ form.event_date_precision }}
+    <label>Дата публикации на источнике</label>{{ form.published_date_at_source }}
+
+    <h3>Медиа и связи</h3>
+    <label>Изображение</label>{{ form.image }}
+    <label>URL изображения</label>{{ form.image_url_original }}
+    <label>Теги</label>{{ form.tags }}
+    <label>Новые теги</label>{{ form.new_tags }}
+    <label>Связанные материалы</label>{{ form.related_materials }}
+    <label>Связанные тесты</label>{{ form.related_tests }}
+
+    <h3>Публикация и импорт</h3>
+    <label>Опубликовано {{ form.is_published }}</label>
+    <label>Featured {{ form.is_featured }}</label>
+    <label>Импортировано из historyrussia {{ form.imported_from_historyrussia }}</label>
+    <label>Статус импорта</label>{{ form.import_status }}
+  </div>
+  <div class="staff-drawer-footer">
+    <button class="btn" type="submit">Сохранить</button>
+    <button class="btn btn-outline" type="submit" name="continue_edit" value="1">Сохранить и продолжить</button>
+    {% if event.id %}
+      <button type="button" class="btn btn-outline" hx-post="/staff/events/{{ event.id }}/duplicate/" hx-confirm="Создать копию события?" hx-swap="none">Дублировать</button>
+      <button type="button" class="btn btn-outline" hx-post="/staff/events/{{ event.id }}/delete/" hx-confirm="Удалить событие?" hx-swap="none">Удалить</button>
+      <a class="btn btn-outline" href="/admin/events/historicalevent/{{ event.id }}/change/" target="_blank" rel="noopener">В Django admin</a>
+    {% endif %}
+    <button type="button" class="btn btn-outline" data-staff-close>Отменить</button>
+  </div>
+</form>

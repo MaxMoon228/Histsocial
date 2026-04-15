@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Избранное — Истобщество{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/favorites.css' %}">{% endblock %}
+{% block content %}
+<section class="container section">
+  {% include "includes/components/breadcrumbs.html" with current="Избранное" %}
+  <p class="section-label">Личная коллекция</p>
+  <h1>Избранное</h1>
+  <div class="page-head-inline">
+    <p>Сохранённые материалы, тесты, события и темы</p>
+    <div class="counter-badge"><strong>{{ total_count }}</strong> сохранено</div>
+  </div>
+  <div class="period-tabs">
+    <a class="{% if active_tab == 'all' %}is-active{% endif %}" href="/favorites/?tab=all">Все</a>
+    <a class="{% if active_tab == 'materials' %}is-active{% endif %}" href="/favorites/?tab=materials">Учебники</a>
+    <a class="{% if active_tab == 'tests' %}is-active{% endif %}" href="/favorites/?tab=tests">Тесты</a>
+    <a class="{% if active_tab == 'events' %}is-active{% endif %}" href="/favorites/?tab=events">События</a>
+    <a class="{% if active_tab == 'topics' %}is-active{% endif %}" href="/favorites/?tab=topics">Темы</a>
+  </div>
+
+  {% if total_count == 0 %}
+    <article class="card empty-state">
+      <h3>Пока пусто</h3>
+      <p>Добавляйте материалы, тесты и события с помощью кнопки «Сохранить».</p>
+      <a class="btn" href="/">Вернуться на главную</a>
+    </article>
+  {% else %}
+    <p class="section-label">Последние сохранённые</p>
+    {% if active_tab == 'all' or active_tab == 'materials' %}
+      <h2>Учебники</h2>
+      <div class="grid-4">{% for material in materials %}{% include "includes/components/material_card.html" %}{% endfor %}</div>
+    {% endif %}
+    {% if active_tab == 'all' or active_tab == 'tests' %}
+      <h2>Тесты</h2>
+      <div class="grid-4">{% for test in tests %}{% include "includes/components/test_card.html" %}{% endfor %}</div>
+    {% endif %}
+    {% if active_tab == 'all' or active_tab == 'events' %}
+      <h2>События</h2>
+      <div class="grid-4">{% for event in events %}{% include "includes/components/event_card.html" %}{% endfor %}</div>
+    {% endif %}
+    {% if active_tab == 'all' or active_tab == 'topics' %}
+      <h2>Темы</h2>
+      <div class="grid-4">{% for topic in topics %}<article class="card"><h3>{{ topic.title }}</h3><p>{{ topic.display_year_text }}</p></article>{% endfor %}</div>
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

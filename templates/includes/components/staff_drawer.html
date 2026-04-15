@@ -1,0 +1,13 @@
+{% if request.user.is_authenticated and request.user.is_staff %}
+  <div id="staff-editor-drawer" class="staff-drawer" aria-hidden="true">
+    <div class="staff-drawer-backdrop" data-staff-close></div>
+    <aside class="staff-drawer-panel" role="dialog" aria-modal="true" aria-label="Редактор карточки">
+      <div class="staff-drawer-head">
+        <h2>Редактор карточки</h2>
+        <button type="button" class="icon-btn" data-staff-close aria-label="Закрыть">✕</button>
+      </div>
+      <div id="staff-editor-body" class="staff-drawer-body"></div>
+    </aside>
+  </div>
+  <div id="staff-toast" class="staff-toast" aria-live="polite"></div>
+{% endif %}

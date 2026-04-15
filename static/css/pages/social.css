@@ -1,0 +1,29 @@
+.social-hero {
+  --social-hero-bg: #12363a;
+  --social-accent: #2f8c92;
+  --social-soft: #cfe7de;
+  background: linear-gradient(140deg, #173842 0%, var(--social-hero-bg) 65%);
+}
+
+.social-hero .section-label {
+  color: #8fd6c5;
+}
+
+.social-hero .chips span {
+  background: rgba(143, 214, 197, 0.12);
+  border-color: rgba(143, 214, 197, 0.25);
+  color: #c6eee3;
+}
+
+.social-tabs button.is-active {
+  background: #e3f2ee;
+  color: #1d6268;
+}
+
+.social-hero + .section .btn.btn-outline {
+  border-color: #c5e1da;
+}
+
+.social-hero + .section .btn.btn-outline:hover {
+  background: #edf7f4;
+}

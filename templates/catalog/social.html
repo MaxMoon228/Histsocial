@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Обществознание — Истобщество{% endblock %}
+{% block meta_description %}Материалы, уроки, презентации и разборы по обществознанию{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/social.css' %}">{% endblock %}
+{% block content %}
+<section class="hero hero-dark social-hero">
+  <div class="container">
+    {% include "includes/components/breadcrumbs.html" with current="Обществознание" %}
+    <p class="section-label">Каталог</p>
+    <h1>Обществознание</h1>
+    <p>Материалы, уроки, презентации и разборы по основным темам обществознания</p>
+    <div class="chips chips-dark">
+      {% for topic in quick_topics %}<span>{{ topic }}</span>{% endfor %}
+    </div>
+  </div>
+</section>
+<section class="container section">
+  {% if request.user.is_authenticated and request.user.is_staff %}
+    <div class="staff-section-toolbar">
+      <button class="btn" hx-get="/staff/materials/create/?section=social" hx-target="#staff-editor-body">Добавить</button>
+      <select id="staff-bulk-action-social">
+        <option value="">Массовое действие</option>
+        <option value="publish">Опубликовать</option>
+        <option value="unpublish">Скрыть</option>
+        <option value="archive">Архивировать</option>
+        <option value="delete">Удалить</option>
+      </select>
+      <button class="btn btn-outline js-staff-bulk-run" data-target-action="#staff-bulk-action-social">Применить</button>
+    </div>
+  {% endif %}
+  <div class="period-tabs social-tabs">
+    {% for category in categories %}
+      <button type="submit" form="social-filter-form" name="quick" value="{{ category }}" class="{% if selected.quick == category or not selected.quick and forloop.first %}is-active{% endif %}">{{ category }}</button>
+    {% endfor %}
+  </div>
+  <form id="social-filter-form" class="filter-form" method="get" hx-get="/htmx/social/filter/" hx-target="#social-grid" hx-trigger="change delay:200ms, keyup changed delay:300ms from:input[name='q']">
+    <div class="search-form">
+      <input type="text" name="q" value="{{ selected.q }}" placeholder="Поиск по обществознанию...">
+      <button type="submit" class="btn btn-outline">Фильтры</button>
+    </div>
+    <div class="filter-row">
+      <select name="level">
+        <option value="">Уровень</option>
+        {% for value, label in level_choices %}<option value="{{ value }}" {% if selected.level == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <select name="material_kind">
+        <option value="">Формат</option>
+        {% for value, label in material_kind_choices %}<option value="{{ value }}" {% if selected.material_kind == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <select name="source">
+        <option value="">Источник</option>
+        {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
+      </select>
+      <select name="tag">
+        <option value="">Тег</option>
+        {% for tag in tags %}<option value="{{ tag.slug }}" {% if selected.tag == tag.slug %}selected{% endif %}>{{ tag.name }}</option>{% endfor %}
+      </select>
+      {% if request.user.is_authenticated and request.user.is_staff %}
+        <select name="staff_state">
+          <option value="all" {% if selected.staff_state == 'all' %}selected{% endif %}>Все</option>
+          <option value="published" {% if selected.staff_state == 'published' %}selected{% endif %}>Опубликованные</option>
+          <option value="draft" {% if selected.staff_state == 'draft' %}selected{% endif %}>Черновики</option>
+          <option value="archived" {% if selected.staff_state == 'archived' %}selected{% endif %}>Архив</option>
+          <option value="no_tags" {% if selected.staff_state == 'no_tags' %}selected{% endif %}>Без тегов</option>
+          <option value="no_cover" {% if selected.staff_state == 'no_cover' %}selected{% endif %}>Без обложки</option>
+          <option value="no_link" {% if selected.staff_state == 'no_link' %}selected{% endif %}>Без ссылки</option>
+        </select>
+      {% endif %}
+    </div>
+  </form>
+  <p class="result-note">Показано {{ total_count }} из {{ total_count }} материалов</p>
+  <div id="social-grid" class="grid-4">
+    {% include "catalog/partials/materials_grid.html" with materials=materials total_count=total_count %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% if materials or tests or events or nodes %}
+<div class="suggest-box">
+  {% if materials %}
+    <strong>Материалы</strong>
+    {% for item in materials %}<a href="/search/?q={{ item.title|urlencode }}">{{ item.title }}</a>{% endfor %}
+  {% endif %}
+  {% if tests %}
+    <strong>Тесты</strong>
+    {% for item in tests %}<a href="/search/?q={{ item.title|urlencode }}">{{ item.title }}</a>{% endfor %}
+  {% endif %}
+  {% if events %}
+    <strong>События</strong>
+    {% for item in events %}<a href="/search/?q={{ item.title|urlencode }}">{{ item.title }}</a>{% endfor %}
+  {% endif %}
+  {% if nodes %}
+    <strong>Темы на оси</strong>
+    {% for item in nodes %}<a href="/axis/?q={{ item.title|urlencode }}">{{ item.title }}</a>{% endfor %}
+  {% endif %}
+</div>
+{% endif %}

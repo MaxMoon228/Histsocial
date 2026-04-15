@@ -1,0 +1,4 @@
+.event-card .pill:first-child { background: #d4ecd9; color: #2f6f47; }
+.calendar-grid { padding-top: 14px; }
+.calendar-grid h3 { background: #12263e; color: #fff; border-radius: 12px; padding: 12px 14px; text-align: center; }
+.calendar-events { display: grid; gap: 12px; }

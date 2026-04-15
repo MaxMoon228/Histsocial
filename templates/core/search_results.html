@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Поиск — Истобщество{% endblock %}
+{% block content %}
+<section class="container section">
+  {% include "includes/components/breadcrumbs.html" with current="Поиск" %}
+  <h1>Результаты поиска{% if query %}: "{{ query }}"{% endif %}</h1>
+  {% include "includes/components/search_bar.html" %}
+  <h2>Материалы</h2>
+  <div class="grid-4">{% for material in materials %}{% include "includes/components/material_card.html" %}{% empty %}<p>Нет результатов.</p>{% endfor %}</div>
+  <h2>Тесты</h2>
+  <div class="grid-4">{% for test in tests %}{% include "includes/components/test_card.html" %}{% empty %}<p>Нет результатов.</p>{% endfor %}</div>
+  <h2>События</h2>
+  <div class="grid-4">{% for event in events %}{% include "includes/components/event_card.html" %}{% empty %}<p>Нет результатов.</p>{% endfor %}</div>
+  <h2>Темы на оси</h2>
+  <div class="grid-4">
+    {% for node in nodes %}
+      <article class="card"><h3>{{ node.title }}</h3><p>{{ node.display_year_text }}</p><a class="btn" href="/axis/?q={{ node.title|urlencode }}">На ось</a></article>
+    {% empty %}
+      <p>Нет результатов.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

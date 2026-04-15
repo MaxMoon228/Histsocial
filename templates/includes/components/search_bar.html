@@ -1,0 +1,5 @@
+<form class="search-form" action="/search/" method="get" data-suggest-url="/htmx/search-suggest/">
+  <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Поиск по теме, событию, дате..." autocomplete="off">
+  <button type="submit" class="btn">Найти</button>
+  <div class="search-suggest" data-suggest-target></div>
+</form>

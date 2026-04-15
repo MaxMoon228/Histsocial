@@ -1,0 +1,97 @@
+<form
+  method="post"
+  enctype="multipart/form-data"
+  class="staff-material-form"
+  hx-post="{% if is_create %}/staff/materials/create/{% else %}/staff/materials/{{ material.id }}/edit/{% endif %}"
+  hx-target="#staff-editor-body"
+  data-staff-form
+>
+  {% csrf_token %}
+  {% if is_create %}<input type="hidden" name="section" value="{{ form.section.value|default:'world' }}">{% endif %}
+  <div class="staff-form-scroll">
+    <h3>Основное</h3>
+    {% if form.non_field_errors %}<div class="staff-error">{{ form.non_field_errors }}</div>{% endif %}
+    <label>Заголовок *</label>{{ form.title }}
+    <label>Slug *</label>{{ form.slug }}
+    <label>Краткое описание</label>{{ form.short_description }}
+    <label>Полное описание</label>{{ form.full_description }}
+
+    <h3>Контент</h3>
+    <label>Раздел</label>{{ form.section }}
+    <label>Тип материала</label>{{ form.material_kind }}
+    <label>Уровень</label>{{ form.level }}
+    <label>Бейдж</label>{{ form.badge_text }}
+    <label>Источник</label>{{ form.source }}
+    <label>Внешняя ссылка</label>{{ form.external_url }}
+    <label>Приоритет ссылки</label>{{ form.link_priority }}
+
+    <h3>Медиа</h3>
+    <label>Основной файл</label>{{ form.primary_file }}
+    {% if material.primary_file %}<a href="{{ material.primary_file.url }}" target="_blank" rel="noopener">Текущий файл</a>{% endif %}
+    <label>Обложка</label>{{ form.cover_image }}
+    {% if material.cover_image %}<img src="{{ material.cover_image.url }}" alt="" class="staff-image-preview">{% endif %}
+
+    <h3>Теги</h3>
+    <label>Существующие теги</label>{{ form.tags }}
+    <label>Новые теги</label>{{ form.new_tags }}
+
+    <h3>Вложения</h3>
+    {% if material.pk %}
+      {% for attachment in material.attachments.all %}
+        <div class="staff-attachment-row">
+          <input type="text" name="attachment_title_{{ attachment.id }}" value="{{ attachment.title }}" placeholder="Название">
+          <input type="text" name="attachment_url_{{ attachment.id }}" value="{{ attachment.external_url }}" placeholder="URL">
+          <select name="attachment_kind_{{ attachment.id }}">
+            <option value="pdf" {% if attachment.attachment_kind == 'pdf' %}selected{% endif %}>PDF</option>
+            <option value="ppt" {% if attachment.attachment_kind == 'ppt' %}selected{% endif %}>PPT</option>
+            <option value="video" {% if attachment.attachment_kind == 'video' %}selected{% endif %}>Видео</option>
+            <option value="image" {% if attachment.attachment_kind == 'image' %}selected{% endif %}>Изображение</option>
+            <option value="other" {% if attachment.attachment_kind == 'other' %}selected{% endif %}>Другое</option>
+          </select>
+          <input type="number" name="attachment_sort_{{ attachment.id }}" value="{{ attachment.sort_order }}" min="0">
+          <input type="file" name="attachment_file_{{ attachment.id }}">
+          <label><input type="checkbox" name="attachment_delete_{{ attachment.id }}" value="1"> Удалить</label>
+        </div>
+      {% empty %}
+        <p class="muted">Пока нет вложений.</p>
+      {% endfor %}
+    {% else %}
+      <p class="muted">Сначала сохраните карточку, чтобы управлять текущими вложениями.</p>
+    {% endif %}
+    <div class="staff-attachment-row">
+      <input type="text" name="new_attachment_title" placeholder="Новое вложение: название">
+      <input type="text" name="new_attachment_url" placeholder="Ссылка на вложение">
+      <select name="new_attachment_kind">
+        <option value="other">Тип</option>
+        <option value="pdf">PDF</option>
+        <option value="ppt">PPT</option>
+        <option value="video">Видео</option>
+        <option value="image">Изображение</option>
+      </select>
+      <input type="file" name="new_attachment_file">
+    </div>
+
+    <h3>Публикация</h3>
+    <label>Опубликовано {{ form.is_published }}</label>
+    <label>Архив {{ form.is_archived }}</label>
+    <label>Внешний ресурс {{ form.is_external_resource }}</label>
+    <label>Порядок сортировки</label>{{ form.sort_order }}
+
+    <h3>Предпросмотр</h3>
+    <article class="card material-card">
+      <h4>{{ form.title.value|default:material.title|default:"Новая карточка" }}</h4>
+      <p>{{ form.short_description.value|default:material.short_description|default:"Краткое описание будет показано здесь."|truncatechars:120 }}</p>
+    </article>
+  </div>
+  <div class="staff-drawer-footer">
+    <button class="btn" type="submit">Сохранить</button>
+    <button class="btn btn-outline" type="submit" name="continue_edit" value="1">Сохранить и продолжить</button>
+    {% if material.id %}
+      <button type="button" class="btn btn-outline" hx-post="/staff/materials/{{ material.id }}/duplicate/" hx-confirm="Создать копию карточки?" hx-swap="none">Дублировать</button>
+      <button type="button" class="btn btn-outline" hx-post="/staff/materials/{{ material.id }}/archive/" hx-confirm="Переместить карточку в архив?" hx-swap="none">Архивировать</button>
+      <button type="button" class="btn btn-outline" hx-post="/staff/materials/{{ material.id }}/delete/" hx-confirm="Удалить карточку безвозвратно?" hx-swap="none">Удалить</button>
+      <a class="btn btn-outline" href="/admin/catalog/material/{{ material.id }}/change/" target="_blank" rel="noopener">В Django admin</a>
+    {% endif %}
+    <button type="button" class="btn btn-outline" data-staff-close>Отменить</button>
+  </div>
+</form>

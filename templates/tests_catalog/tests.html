@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Тестирования — Истобщество{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/tests.css' %}">{% endblock %}
+{% block content %}
+<section class="container section">
+  {% include "includes/components/breadcrumbs.html" with current="Тестирования" %}
+  <p class="section-label">Каталог</p>
+  <h1>Тестирования</h1>
+  <p>Подготовка к ОГЭ, ЕГЭ, тренажёры и проверка знаний</p>
+  <div class="period-tabs">
+    <button class="{% if not selected.exam_type %}is-active{% endif %}" type="button">Все тесты</button>
+    <button type="button">ЕГЭ</button>
+    <button type="button">ОГЭ</button>
+    <button type="button">Школьный тренажёр</button>
+  </div>
+  <div class="summary-cards">
+    <article class="card"><h3>{{ stats_ege }}</h3><p>Тестов ЕГЭ</p></article>
+    <article class="card"><h3>{{ stats_oge }}</h3><p>Тестов ОГЭ</p></article>
+    <article class="card"><h3>{{ stats_trainer }}</h3><p>Тренажёров</p></article>
+  </div>
+  <form class="filter-form" method="get" hx-get="/htmx/tests/filter/" hx-target="#tests-grid" hx-trigger="change delay:200ms, keyup changed delay:300ms from:input[name='q']">
+    <div class="search-form">
+      <input type="text" name="q" value="{{ selected.q }}" placeholder="Поиск по теме или названию...">
+      <button type="submit" class="btn btn-outline">Фильтры</button>
+    </div>
+    <div class="filter-row">
+      <select name="exam_type">
+        <option value="">Тип теста</option>
+        {% for value, label in exam_type_choices %}<option value="{{ value }}" {% if selected.exam_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <select name="task_type">
+        <option value="">Задание</option>
+        {% for value, label in task_type_choices %}<option value="{{ value }}" {% if selected.task_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <select name="difficulty">
+        <option value="">Сложность</option>
+        {% for value, label in difficulty_choices %}<option value="{{ value }}" {% if selected.difficulty == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <select name="source">
+        <option value="">Источник</option>
+        {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="chips test-task-chips">
+      {% for value, label in task_type_choices %}<span>{{ label }}</span>{% endfor %}
+    </div>
+  </form>
+  <p class="result-note">Найдено: {{ total_count }} тестов</p>
+  <div id="tests-grid" class="grid-4">
+    {% include "tests_catalog/partials/tests_grid.html" with tests=tests total_count=total_count %}
+  </div>
+</section>
+{% endblock %}

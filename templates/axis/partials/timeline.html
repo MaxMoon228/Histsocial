@@ -1,0 +1,32 @@
+<div class="timeline timeline-horizontal">
+  <div class="timeline-line"></div>
+  {% for node in nodes %}
+    <div class="timeline-node-wrap">
+      <button
+        type="button"
+        class="timeline-node-btn {% if node.id == active_node_id %}is-active{% endif %}"
+        style="--accent: {{ node.accent_color }}"
+        hx-get="/htmx/axis/node/{{ node.id }}/"
+        hx-target="#axis-detail"
+        hx-swap="innerHTML"
+        hx-on:click="document.querySelectorAll('.timeline-node-btn').forEach((n)=>n.classList.remove('is-active')); this.classList.add('is-active')"
+        data-axis-node-id="{{ node.id }}"
+        aria-pressed="{% if node.id == active_node_id %}true{% else %}false{% endif %}"
+        aria-label="Показать детали события {{ node.title }}"
+      >
+        <span class="axis-node-top">{{ node.title }}</span>
+        <span class="axis-dot"></span>
+        <span class="axis-year">{{ node.display_year_text }}</span>
+        <span class="axis-node-sub">{{ node.subtitle|truncatechars:30 }}</span>
+      </button>
+      {% if request.user.is_authenticated and request.user.is_staff %}
+        <div class="axis-node-tools">
+          <button class="icon-btn" hx-get="/staff/axis-nodes/{{ node.id }}/edit/" hx-target="#staff-editor-body" aria-label="Редактировать точку">✎</button>
+          <button class="icon-btn" hx-post="/staff/axis-nodes/{{ node.id }}/toggle-publish/" hx-swap="none" title="Опубликовать/Скрыть">{% if node.is_published %}👁{% else %}🚫{% endif %}</button>
+        </div>
+      {% endif %}
+    </div>
+  {% empty %}
+    <article class="card axis-empty"><h3>Ничего не найдено</h3><p>Измените параметры фильтра и повторите запрос.</p></article>
+  {% endfor %}
+</div>

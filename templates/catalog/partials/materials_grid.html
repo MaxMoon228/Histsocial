@@ -1,0 +1,5 @@
+{% for material in materials %}
+  {% include "includes/components/material_card.html" %}
+{% empty %}
+  <p>Материалы не найдены.</p>
+{% endfor %}

@@ -1,0 +1,14 @@
+{% with saved=is_saved|default:False %}
+<button
+  class="favorite-btn {% if saved %}is-saved{% endif %}"
+  hx-post="/htmx/favorites/toggle/"
+  hx-vals='{"item_type":"{{ item_type }}","item_id":"{{ item_id }}"}'
+  hx-target="this"
+  hx-swap="outerHTML"
+  hx-trigger="click"
+  aria-label="{% if saved %}Убрать из избранного{% else %}Сохранить в избранное{% endif %}"
+  title="{% if saved %}Убрать из избранного{% else %}Сохранить в избранное{% endif %}"
+>
+  {% if saved %}★{% else %}☆{% endif %}
+</button>
+{% endwith %}
