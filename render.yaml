@@ -1,0 +1,76 @@
+services:
+  - type: web
+    name: histsocial-web
+    env: python
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements/prod.txt
+    startCommand: bash scripts/render_start.sh
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "0"
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://*.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: histsocial-db
+          property: connectionString
+      - key: SUPERUSER_USERNAME
+        value: admin
+      - key: SUPERUSER_EMAIL
+        value: admin@example.com
+      - key: SUPERUSER_PASSWORD
+        value: admin12345
+      - key: DEFAULT_STAFF_USERNAME
+        value: Истобщество
+      - key: DEFAULT_STAFF_PASSWORD
+        value: 12345
+      - key: DEFAULT_STAFF_EMAIL
+        value: staff@example.com
+      - key: HISTORY_CALENDAR_DEFAULT_PAGES
+        value: "3"
+      - key: HISTORY_CALENDAR_WITH_DETAILS
+        value: "1"
+      - key: HISTORY_CALENDAR_FROM_PAGE
+        value: "1"
+
+  - type: cron
+    name: histsocial-calendar-sync
+    env: python
+    plan: free
+    schedule: "0 3 * * *"
+    buildCommand: pip install -r requirements/prod.txt
+    startCommand: python manage.py sync_history_calendar --pages 3 --with-details
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "0"
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://*.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: histsocial-db
+          property: connectionString
+      - key: HISTORY_CALENDAR_DEFAULT_PAGES
+        value: "3"
+      - key: HISTORY_CALENDAR_WITH_DETAILS
+        value: "1"
+      - key: HISTORY_CALENDAR_FROM_PAGE
+        value: "1"
+
+databases:
+  - name: histsocial-db
+    plan: free
+    databaseName: histsocial
+    user: histsocial

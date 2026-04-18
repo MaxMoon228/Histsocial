@@ -41,6 +41,31 @@ docker compose up --build
 
 После старта открыть: [http://localhost](http://localhost)
 
+## Deploy на Render (полностью рабочий backend)
+
+В репозитории добавлен `render.yaml` (Blueprint):
+- Web service (Django + Gunicorn)
+- PostgreSQL (Render DB)
+- Cron job для ежедневного импорта календаря
+
+Шаги:
+1. Откройте Render Dashboard.
+2. **New +** → **Blueprint**.
+3. Выберите репозиторий `MaxMoon228/Histsocial`.
+4. Подтвердите создание сервисов из `render.yaml`.
+5. После первого деплоя откройте URL web-сервиса вида `https://histsocial-web.onrender.com`.
+
+Что запускается на web старте:
+- `migrate`
+- `collectstatic`
+- `create_initial_sources`
+- `create_admin_user`
+- `create_default_staff`
+- `seed_demo_content`
+
+Cron-сервис ежедневно выполняет:
+`python manage.py sync_history_calendar --pages 3 --with-details`
+
 ## Полезные команды
 
 ```bash
