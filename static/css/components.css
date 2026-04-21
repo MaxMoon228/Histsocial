@@ -440,6 +440,35 @@
   overflow: hidden;
 }
 
+.material-card,
+.test-card,
+.event-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.material-card .card-footer,
+.test-card .card-footer,
+.event-card .card-footer {
+  margin-top: auto;
+}
+
+.material-card .card-head .pill:not(:first-of-type),
+.test-card .card-head .pill:not(:first-of-type),
+.event-card .card-head .pill:not(:first-of-type) {
+  display: none;
+}
+
+.material-card .tags,
+.test-card .tags,
+.event-card .tags,
+.material-card > .pill,
+.test-card > .pill,
+.event-card > .pill {
+  display: none !important;
+}
+
 .staff-card-tools-inline {
   display: flex;
   align-items: center;

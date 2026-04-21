@@ -11,14 +11,25 @@ from apps.catalog.models import Material
 from apps.common.models import ExternalClickLog, SearchQueryLog, Tag
 from apps.events.models import HistoricalEvent
 from apps.tests_catalog.models import TestItem
+from .models import HomePageAuthorBlock
 
 
 def home(request):
     featured_materials = Material.objects.filter(is_published=True, is_archived=False).select_related("source")[:3]
     era_tags = Tag.objects.filter(tag_type="era")[:10]
+    author_block = HomePageAuthorBlock.objects.filter(is_active=True).first()
+    if not author_block:
+        author_block = HomePageAuthorBlock.objects.create(
+            is_active=True,
+            section_label="Автор проекта",
+            title_text="Автор сайта — Билалова Дина Султановна.",
+            subtitle_text="Учитель истории и обществознания высшей квалификационной категории, преподаватель СОШИ Лицей имени Н. И. Лобачевского КФУ.",
+            description_text="Проект объединяет академическую точность, современные учебные маршруты и удобную навигацию по ключевым темам.",
+        )
     context = {
         "featured_materials": featured_materials,
         "era_tags": era_tags,
+        "author_block": author_block,
         "popular_queries": [
             "Пётр I",
             "Французская революция",
@@ -37,8 +48,75 @@ def about(request):
         "materials": Material.objects.filter(is_published=True, is_archived=False).count(),
         "tests": TestItem.objects.filter(is_published=True).count(),
         "events": HistoricalEvent.objects.filter(is_published=True).count(),
+        "axis_nodes": TimelineNode.objects.filter(is_published=True).count(),
     }
-    return render(request, "core/about.html", {"stats": stats})
+    useful_resources = [
+        {
+            "title": "History.ru",
+            "url": "https://history.ru/",
+            "domain": "history.ru",
+            "description": "Исторические статьи, материалы и аналитика по ключевым эпохам.",
+            "image_url": "https://historyrussia.org/images/16042026_RAO/SHAR0867_1.jpg",
+        },
+        {
+            "title": "Российское историческое общество",
+            "url": "https://historyrussia.org/",
+            "domain": "historyrussia.org",
+            "description": "Официальный портал с событиями, проектами и историческими публикациями.",
+            "image_url": "https://historyrussia.org/images/jsn_is_thumbs/images/Slideshow_CK_Test/2026/Red_Square_2026_1.jpg",
+        },
+        {
+            "title": "Конкурс «История в школе: традиции и новации»",
+            "url": "https://fond.historyrussia.org/vserossijskij-konkurs-istoriya-v-shkole-traditsii-i-novatsii.html",
+            "domain": "fond.historyrussia.org",
+            "description": "Всероссийский конкурс образовательных практик для преподавателей истории.",
+            "image_url": "https://historyrussia.org/images/jsn_is_thumbs/images/Slideshow_CK_Test/2026/Youth_schools_1.jpg",
+        },
+        {
+            "title": "Культура.РФ",
+            "url": "https://www.culture.ru/",
+            "domain": "culture.ru",
+            "description": "Культурные гиды, лекции, архивы и цифровые выставки по России.",
+            "image_url": "https://historyrussia.org/images/jsn_is_thumbs/images/Slideshow_CK_Test/2026/Zasechnie_line_3.jpg",
+        },
+        {
+            "title": "Арзамас",
+            "url": "https://arzamas.academy/mag",
+            "domain": "arzamas.academy",
+            "description": "Научно-популярные курсы и статьи по гуманитарным дисциплинам.",
+            "image_url": "https://historyrussia.org/images/13042026_225_Dal/SHAR0090_2.jpg",
+        },
+        {
+            "title": "I Love Economics",
+            "url": "https://www.iloveeconomics.ru/",
+            "domain": "iloveeconomics.ru",
+            "description": "Олимпиадные задачи, книги, видео и материалы по экономике для школьников.",
+            "image_url": "https://iloveeconomics.ru/add/img/ILE_stamp_large.png",
+        },
+        {
+            "title": "Онлайн-уроки по финансовой грамотности",
+            "url": "https://dni-fg.ru/",
+            "domain": "dni-fg.ru",
+            "description": "Интерактивные онлайн-уроки по финансовой грамотности для школьников и педагогов.",
+            "image_url": "https://static.tildacdn.com/tild3033-3765-4436-a561-373639343066/Deskto42p-Compressif.jpg",
+        },
+        {
+            "title": "Финансовая культура",
+            "url": "https://fincult.info/",
+            "domain": "fincult.info",
+            "description": "Просветительский ресурс Банка России о личных финансах, безопасности и полезных сервисах.",
+            "image_url": "https://fincult.info/f/dist/images/share/share.jpg",
+        },
+    ]
+    return render(request, "core/about.html", {"stats": stats, "useful_resources": useful_resources})
+
+
+def materials(request):
+    return render(request, "core/textbooks.html")
+
+
+def textbooks(request):
+    return redirect("materials")
 
 
 def search_results(request):

@@ -1,10 +1,8 @@
 import calendar
 from datetime import date
-from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import transaction
-from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -12,12 +10,26 @@ from django.shortcuts import render
 from .forms import HistoricalEventStaffForm
 from .models import HistoricalEvent
 
+CALENDAR_YEAR = 2026
 
-def _get_selected_date(request):
-    year = int(request.GET.get("year", date.today().year) or date.today().year)
-    month = int(request.GET.get("month", date.today().month) or date.today().month)
-    day = int(request.GET.get("day", date.today().day) or date.today().day)
-    return date(year, month, day)
+
+def _get_selected_month(request):
+    raw = request.GET.get("month")
+    try:
+        month = int(raw or date.today().month)
+    except (TypeError, ValueError):
+        month = date.today().month
+    return min(12, max(1, month))
+
+
+def _get_selected_day(request, selected_month):
+    raw_day = request.GET.get("day")
+    max_day = calendar.monthrange(CALENDAR_YEAR, selected_month)[1]
+    try:
+        day = int(raw_day or date.today().day)
+    except (TypeError, ValueError):
+        day = date.today().day
+    return min(max_day, max(1, day))
 
 
 def _base_events_queryset(request):
@@ -44,26 +56,6 @@ def _base_events_queryset(request):
     return events
 
 
-def _apply_filters(queryset, selected, mode, scope, event_type):
-    if scope:
-        queryset = queryset.filter(scope=scope)
-    if event_type:
-        queryset = queryset.filter(event_type=event_type)
-
-    if mode == "week":
-        week_days = [selected + timedelta(days=delta) for delta in range(-3, 4)]
-        day_filters = Q()
-        for day_item in week_days:
-            day_filters |= Q(month=day_item.month, day=day_item.day)
-        queryset = queryset.filter(day_filters)
-    elif mode == "month":
-        queryset = queryset.filter(month=selected.month)
-    else:
-        queryset = queryset.filter(month=selected.month, day=selected.day)
-
-    return queryset.order_by("month", "day", "year", "title")
-
-
 def _month_name_ru(month_number):
     names = {
         1: "Январь",
@@ -83,41 +75,44 @@ def _month_name_ru(month_number):
 
 
 def calendar_page(request):
-    selected = _get_selected_date(request)
-    mode = request.GET.get("mode", "today")
-    scope = request.GET.get("scope", "")
-    event_type = request.GET.get("event_type", "")
-
+    selected_month = _get_selected_month(request)
+    selected_day = _get_selected_day(request, selected_month)
+    today = date.today()
     all_events = _base_events_queryset(request)
-    events = _apply_filters(all_events, selected, mode, scope, event_type)
+    events = all_events.filter(month=selected_month, day=selected_day).order_by("year", "title")
     imported_exists = HistoricalEvent.objects.filter(imported_from_historyrussia=True).exists()
-    if not events.exists():
-        events = _base_events_queryset(request).order_by("-last_synced_at", "-updated_at", "month", "day")[:30]
+    days_with_events = set(all_events.filter(month=selected_month).values_list("day", flat=True))
+    prev_month = selected_month - 1 if selected_month > 1 else None
+    next_month = selected_month + 1 if selected_month < 12 else None
+    selected_label = f"{selected_day} {_month_name_ru(selected_month).lower()}"
+    is_today_selected = selected_month == today.month and selected_day == today.day and CALENDAR_YEAR == today.year
     context = {
-        "selected_date": selected,
-        "month_days": calendar.monthcalendar(selected.year, selected.month),
-        "month_name": _month_name_ru(selected.month),
+        "calendar_year": CALENDAR_YEAR,
+        "selected_month": selected_month,
+        "selected_day": selected_day,
+        "prev_month": prev_month,
+        "next_month": next_month,
+        "today_day": today.day,
+        "today_month": today.month,
+        "selected_label": selected_label,
+        "is_today_selected": is_today_selected,
+        "month_days": calendar.monthcalendar(CALENDAR_YEAR, selected_month),
+        "month_name": _month_name_ru(selected_month),
+        "days_with_events": days_with_events,
         "events": events,
-        "mode": mode,
-        "scope": scope,
-        "event_type": event_type,
         "imported_exists": imported_exists,
     }
     return render(request, "events/calendar.html", context)
 
 
 def calendar_day(request):
-    selected = _get_selected_date(request)
-    mode = request.GET.get("mode", "today")
-    scope = request.GET.get("scope", "")
-    event_type = request.GET.get("event_type", "")
-    queryset = _apply_filters(_base_events_queryset(request), selected, mode, scope, event_type)
-    if not queryset.exists():
-        queryset = _base_events_queryset(request).order_by("-last_synced_at", "-updated_at", "month", "day")
+    selected_month = _get_selected_month(request)
+    selected_day = _get_selected_day(request, selected_month)
+    queryset = _base_events_queryset(request).filter(month=selected_month, day=selected_day).order_by("year", "title")
     return render(
         request,
         "events/partials/event_list.html",
-        {"events": queryset[:30], "selected_date": selected, "mode": mode},
+        {"events": queryset[:30]},
     )
 
 
@@ -161,7 +156,6 @@ def _staff_event_form_response(request, event: HistoricalEvent, is_create: bool)
             request,
             "events/staff/partials/event_form.html",
             {"form": form, "event": event, "is_create": is_create},
-            status=422,
         )
 
     form = HistoricalEventStaffForm(instance=event)

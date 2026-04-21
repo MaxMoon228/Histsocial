@@ -10,6 +10,23 @@ from apps.common.models import Source, Tag
 from .forms import MaterialStaffForm, MaterialQuickActionForm
 from .models import Material
 
+RUSSIA_CLASS_FILTERS = {
+    "6 класс": [6],
+    "7 класс": [7],
+    "8 класс": [8],
+    "9 класс": [9],
+    "10-11 класс": [10, 11],
+}
+
+WORLD_CLASS_FILTERS = {
+    "6 класс": [6],
+    "7 класс": [7],
+    "8 класс": [8],
+    "9 класс": [9],
+    "10 класс": [10],
+    "11 класс": [11],
+}
+
 
 def _filtered_materials(section, request):
     queryset = Material.objects.filter(section=section).select_related("source").prefetch_related("tags")
@@ -45,24 +62,45 @@ def _filtered_materials(section, request):
         queryset = queryset.filter(source__slug=source)
     if tag:
         queryset = queryset.filter(tags__slug=tag)
-    if quick and quick.lower() not in {"все периоды", "все темы"}:
-        queryset = queryset.filter(
-            Q(title__icontains=quick)
-            | Q(short_description__icontains=quick)
-            | Q(full_description__icontains=quick)
-            | Q(tags__name__icontains=quick)
-        )
+    if quick:
+        class_map = {}
+        if section == "russia":
+            class_map = RUSSIA_CLASS_FILTERS
+        elif section == "world":
+            class_map = WORLD_CLASS_FILTERS
+        if quick in class_map:
+            class_filters = Q()
+            for class_num in class_map[quick]:
+                class_filters |= Q(external_url__contains=f"/{class_num}/")
+            queryset = queryset.filter(class_filters)
+        elif quick.lower() not in {"все периоды", "все темы"}:
+            queryset = queryset.filter(
+                Q(title__icontains=quick)
+                | Q(short_description__icontains=quick)
+                | Q(full_description__icontains=quick)
+                | Q(tags__name__icontains=quick)
+            )
     return queryset.distinct()
 
 
 def world(request):
     materials = _filtered_materials("world", request)
+    period_tabs = [
+        "Все периоды",
+        "6 класс",
+        "7 класс",
+        "8 класс",
+        "9 класс",
+        "10 класс",
+        "11 класс",
+    ]
     selected = {
         "q": request.GET.get("q", ""),
         "level": request.GET.get("level", ""),
         "material_kind": request.GET.get("material_kind", ""),
         "source": request.GET.get("source", ""),
         "tag": request.GET.get("tag", ""),
+        "quick": request.GET.get("quick", ""),
         "staff_state": request.GET.get("staff_state", "all"),
     }
     context = {
@@ -73,6 +111,7 @@ def world(request):
         "tags": Tag.objects.filter(tag_type__in=["topic", "period", "era"]),
         "level_choices": LEVEL_CHOICES,
         "material_kind_choices": MATERIAL_KIND_CHOICES,
+        "period_tabs": period_tabs,
         "selected": selected,
         "total_count": materials.count(),
         "staff_mode": request.user.is_staff,
@@ -88,7 +127,14 @@ def world_filter(request):
 
 def russia(request):
     materials = _filtered_materials("russia", request)
-    period_tabs = ["Все периоды", "Древняя Русь", "Раздробленность", "Московское государство", "Российская империя", "XIX век", "Начало XX века", "СССР", "Современная Россия"]
+    period_tabs = [
+        "Все периоды",
+        "6 класс",
+        "7 класс",
+        "8 класс",
+        "9 класс",
+        "10-11 класс",
+    ]
     selected = {
         "q": request.GET.get("q", ""),
         "level": request.GET.get("level", ""),
@@ -201,7 +247,6 @@ def _staff_material_form_response(request, material, is_create):
             request,
             "catalog/staff/partials/material_form.html",
             {"form": form, "material": material, "is_create": is_create},
-            status=422,
         )
     form = MaterialStaffForm(instance=material, initial={"section": material.section or request.GET.get("section", "world")})
     return render(request, "catalog/staff/partials/material_form.html", {"form": form, "material": material, "is_create": is_create})

@@ -1,25 +1,46 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}О проекте — Истобщество{% endblock %}
+{% block title %}Полезная информация — Истобщество{% endblock %}
 {% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/about.css' %}">{% endblock %}
+{% block body_class %}about-page{% endblock %}
 {% block content %}
 <section class="hero hero-dark">
   <div class="container">
-    {% include "includes/components/breadcrumbs.html" with current="О проекте" %}
-    <p class="section-label">О проекте</p>
+    {% include "includes/components/breadcrumbs.html" with current="Полезная информация" %}
+    <p class="section-label">Полезная информация</p>
     <h1>{{ site_name }}</h1>
     <p class="lead">{{ site_tagline }}</p>
   </div>
 </section>
-<section class="container section split">
+<section class="container section split about-intro">
   <div>
     <p>{{ site_name }} не публикует собственные учебники. Платформа агрегирует внешние материалы, тесты и события, помогает быстро находить релевантные источники и связывает их в единый учебный контекст.</p>
     <p>Ключевые модули: каталоги материалов, календарь исторических событий, подборка тестов и умная историческая ось.</p>
   </div>
   <div class="stats-grid">
-    <article class="card"><h3>{{ stats.materials }}+</h3><p>Учебных материалов</p></article>
-    <article class="card"><h3>{{ stats.tests }}+</h3><p>Тестов и тренажёров</p></article>
-    <article class="card"><h3>{{ stats.events }}+</h3><p>Событий в календаре</p></article>
+    <article class="card"><h3>{{ stats.materials }}</h3><p>Учебных материалов</p></article>
+    <article class="card"><h3>{{ stats.tests }}</h3><p>Тестов и тренажёров</p></article>
+    <article class="card"><h3>{{ stats.events }}</h3><p>Событий в календаре</p></article>
+    <article class="card"><h3>{{ stats.axis_nodes }}</h3><p>Точек на исторической оси</p></article>
+  </div>
+</section>
+<section class="container section about-sites">
+  <p class="section-label">Полезные сайты</p>
+  <h2>Полезная информация</h2>
+  <div class="resource-grid">
+    {% for item in useful_resources %}
+      <a class="card resource-card" href="{{ item.url }}" target="_blank" rel="noopener">
+        <div class="resource-cover">
+          <img src="{{ item.image_url }}" alt="{{ item.title }}" loading="lazy" referrerpolicy="no-referrer">
+          <span class="resource-cover-overlay"></span>
+        </div>
+        <div class="resource-body">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+          <small>{{ item.domain }}</small>
+        </div>
+      </a>
+    {% endfor %}
   </div>
 </section>
 {% endblock %}

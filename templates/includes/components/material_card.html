@@ -15,18 +15,19 @@
   </div>
   <h3>{{ material.title }}</h3>
   <p>{{ material.short_description|truncatechars:96 }}</p>
-  <div class="tags">
-    {% for tag in material.tags.all|slice:":4" %}<span>{{ tag.name }}</span>{% endfor %}
-  </div>
   <div class="card-footer">
     <small>🔗 {{ material.source.name }}</small>
-    <a
-      class="btn js-external-go"
-      href="/go/material/{{ material.id }}/"
-      data-item-title="{{ material.title }}"
-      data-source-domain="{{ material.source.domain|default:material.source.name }}"
-      data-content-label="материалу"
-    >Открыть источник</a>
+    {% if material.primary_file %}
+      <a class="btn btn-outline" href="{{ material.primary_file.url }}" download>Скачать файл</a>
+    {% elif material.external_url %}
+      <a
+        class="btn js-external-go"
+        href="/go/material/{{ material.id }}/"
+        data-item-title="{{ material.title }}"
+        data-source-domain="{{ material.source.domain|default:material.source.name }}"
+        data-content-label="материалу"
+      >Открыть источник</a>
+    {% endif %}
     {% if material.id in favorites_state.materials %}
       {% include "includes/components/favorite_button.html" with item_type="materials" item_id=material.id is_saved=True %}
     {% else %}

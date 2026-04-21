@@ -6,19 +6,26 @@
 <section class="hero home-hero">
   <div class="container home-hero-grid">
     <div class="hero-content">
-      <span class="hero-badge">Интеллектуальный навигатор по истории и обществознанию</span>
+      <span class="hero-badge">Навигатор по истории и обществознанию</span>
       <h1>История и обществознание —<br><span>в одной системе</span></h1>
-      <p class="hero-subtitle">Учебники, тесты и тематические материалы в едином навигаторе. Найдите тему, эпоху, правовой вопрос, событие или деятеля.</p>
+      <p class="hero-subtitle">Материалы, тесты и тематические подборки в едином навигаторе. Найдите тему, эпоху, правовой вопрос, событие или деятеля.</p>
       <div class="hero-search-wrap">{% include "includes/components/search_bar.html" %}</div>
-      <div class="chips chips-dark">
-        {% for chip in popular_queries %}<a href="/search/?q={{ chip|urlencode }}">{{ chip }}</a>{% endfor %}
-      </div>
     </div>
-    <aside class="author-card">
-      <p class="section-label">Автор проекта</p>
-      <p><strong>Автор сайта — Билалова Дина Султановна.</strong></p>
-      <p>Учитель истории и обществознания высшей квалификационной категории, преподаватель <strong>СОШИ Лицей имени Н. И. Лобачевского КФУ</strong>.</p>
-      <p>Проект объединяет академическую точность, современные учебные маршруты и удобную навигацию по ключевым темам.</p>
+    <aside class="author-card{% if author_block.photo %} author-card-with-photo{% endif %}">
+      {% if author_block.photo %}
+        <div class="author-photo-wrap">
+          <img class="author-photo" src="{{ author_block.photo.url }}" alt="Автор проекта">
+        </div>
+      {% endif %}
+      <div class="author-content">
+        <p class="section-label">{{ author_block.section_label }}</p>
+        <p><strong>{{ author_block.title_text }}</strong></p>
+        <p>{{ author_block.subtitle_text }}</p>
+        <p>{{ author_block.description_text }}</p>
+        {% if request.user.is_authenticated and request.user.is_staff %}
+          <p><a class="btn btn-outline btn-xs" href="/admin/core/homepageauthorblock/" target="_blank" rel="noopener">Редактировать блок автора</a></p>
+        {% endif %}
+      </div>
     </aside>
   </div>
 </section>
@@ -27,10 +34,12 @@
   <p class="section-label">Разделы</p>
   <h2>Выберите направление</h2>
   <div class="direction-grid">
-    <a class="card direction-card direction-card-world" href="/world/"><strong>Всеобщая история</strong><small>Учебники и уроки по мировой истории</small></a>
+    <a class="card direction-card direction-card-world" href="/world/"><strong>Всеобщая история</strong><small>Материалы и уроки по мировой истории</small></a>
     <a class="card direction-card direction-card-russia" href="/russia/"><strong>История России</strong><small>От Древней Руси до современности</small></a>
     <a class="card direction-card direction-card-social" href="/social/"><strong>Обществознание</strong><small>Основные темы, право, экономика и политика</small></a>
     <a class="card direction-card direction-card-tests" href="/tests/"><strong>Тестирования</strong><small>ОГЭ, ЕГЭ, тренажеры и задания</small></a>
+    <a class="card direction-card direction-card-tests" href="/self-check/"><strong>Викторины</strong><small>Карточки для самопроверки по темам</small></a>
+    <a class="card direction-card direction-card-tests" href="/activities/"><strong>Мероприятия</strong><small>Форумы, презентации и активности</small></a>
     <a class="card direction-card direction-card-calendar" href="/calendar/"><strong>Календарь событий</strong><small>Исторические даты каждого дня</small></a>
   </div>
 </section>

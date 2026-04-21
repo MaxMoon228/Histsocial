@@ -46,19 +46,31 @@ class MaterialStaffForm(forms.ModelForm):
             "source": forms.Select(attrs={"class": "staff-input"}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["slug"].required = False
+
     def clean(self):
         cleaned = super().clean()
         external_url = cleaned.get("external_url")
         primary_file = cleaned.get("primary_file")
-        is_external = cleaned.get("is_external_resource")
-        if is_external and not external_url and not primary_file and not self.instance.pk:
-            raise forms.ValidationError("Для внешнего ресурса укажите ссылку или файл.")
+        if external_url and primary_file:
+            raise forms.ValidationError("Для карточки укажите только один источник: либо ссылку, либо файл.")
+        if not external_url and not primary_file:
+            raise forms.ValidationError("Для карточки укажите источник: ссылку или файл.")
         return cleaned
 
     def save(self, commit=True):
         instance = super().save(commit=False)
         if not instance.slug:
             instance.slug = slugify(instance.title)
+        if instance.primary_file:
+            instance.external_url = ""
+            instance.link_priority = "file"
+            instance.is_external_resource = False
+        else:
+            instance.link_priority = "external"
+            instance.is_external_resource = True
         if commit:
             instance.save()
             self.save_m2m()

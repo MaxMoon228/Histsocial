@@ -1,52 +1,87 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Тестирования — Истобщество{% endblock %}
+{% block title %}{{ section_title }} — Истобщество{% endblock %}
 {% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/tests.css' %}">{% endblock %}
 {% block content %}
 <section class="container section">
-  {% include "includes/components/breadcrumbs.html" with current="Тестирования" %}
-  <p class="section-label">Каталог</p>
-  <h1>Тестирования</h1>
-  <p>Подготовка к ОГЭ, ЕГЭ, тренажёры и проверка знаний</p>
+  {% include "includes/components/breadcrumbs.html" with current=section_title %}
+  {% if catalog_section != "testing" %}<p class="section-label">Каталог</p>{% endif %}
+  <h1>{{ section_title }}</h1>
+  <p>{{ section_description }}</p>
   <div class="period-tabs">
-    <button class="{% if not selected.exam_type %}is-active{% endif %}" type="button">Все тесты</button>
-    <button type="button">ЕГЭ</button>
-    <button type="button">ОГЭ</button>
-    <button type="button">Школьный тренажёр</button>
+    <a class="{% if catalog_section == 'testing' %}is-active{% endif %}" href="/tests/">Тестирования</a>
+    <a class="{% if catalog_section == 'self_check' %}is-active{% endif %}" href="/self-check/">Викторины</a>
+    <a class="{% if catalog_section == 'activities' %}is-active{% endif %}" href="/activities/">Мероприятия</a>
   </div>
-  <div class="summary-cards">
-    <article class="card"><h3>{{ stats_ege }}</h3><p>Тестов ЕГЭ</p></article>
-    <article class="card"><h3>{{ stats_oge }}</h3><p>Тестов ОГЭ</p></article>
-    <article class="card"><h3>{{ stats_trainer }}</h3><p>Тренажёров</p></article>
-  </div>
-  <form class="filter-form" method="get" hx-get="/htmx/tests/filter/" hx-target="#tests-grid" hx-trigger="change delay:200ms, keyup changed delay:300ms from:input[name='q']">
+  {% if staff_mode %}
+    <div class="staff-section-toolbar">
+      <button class="btn" hx-get="/staff/tests/create/?mode={{ catalog_section }}" hx-target="#staff-editor-body">Добавить карточку</button>
+      <a class="btn btn-outline" href="/admin/tests_catalog/testitem/" target="_blank" rel="noopener">Тесты в Django admin</a>
+    </div>
+  {% endif %}
+  <form
+    class="filter-form"
+    method="get"
+    hx-get="{% if catalog_section == 'self_check' %}/htmx/self-check/filter/{% elif catalog_section == 'activities' %}/htmx/activities/filter/{% else %}/htmx/tests/filter/{% endif %}"
+    hx-target="#tests-grid"
+    hx-trigger="change delay:200ms, keyup changed delay:300ms from:input[name='q']"
+  >
     <div class="search-form">
       <input type="text" name="q" value="{{ selected.q }}" placeholder="Поиск по теме или названию...">
       <button type="submit" class="btn btn-outline">Фильтры</button>
     </div>
     <div class="filter-row">
-      <select name="exam_type">
-        <option value="">Тип теста</option>
-        {% for value, label in exam_type_choices %}<option value="{{ value }}" {% if selected.exam_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-      </select>
-      <select name="task_type">
-        <option value="">Задание</option>
-        {% for value, label in task_type_choices %}<option value="{{ value }}" {% if selected.task_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-      </select>
-      <select name="difficulty">
-        <option value="">Сложность</option>
-        {% for value, label in difficulty_choices %}<option value="{{ value }}" {% if selected.difficulty == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-      </select>
-      <select name="source">
-        <option value="">Источник</option>
-        {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
-      </select>
+      {% if catalog_section != "activities" %}
+        <select name="subject">
+          <option value="">Предмет</option>
+          <option value="history" {% if selected.subject == "history" %}selected{% endif %}>История</option>
+          <option value="social" {% if selected.subject == "social" %}selected{% endif %}>Обществознание</option>
+        </select>
+        <select name="history_subsection">
+          <option value="">Подраздел истории</option>
+          <option value="xvii" {% if selected.history_subsection == "xvii" %}selected{% endif %}>История 17 века</option>
+          <option value="xix" {% if selected.history_subsection == "xix" %}selected{% endif %}>История 19 века</option>
+        </select>
+      {% endif %}
+      {% if catalog_section != "testing" and catalog_section != "activities" %}
+        <select name="exam_type">
+          <option value="">Тип теста</option>
+          {% for value, label in exam_type_choices %}<option value="{{ value }}" {% if selected.exam_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+        <select name="task_type">
+          <option value="">Задание</option>
+          {% for value, label in task_type_choices %}<option value="{{ value }}" {% if selected.task_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+        <select name="difficulty">
+          <option value="">Сложность</option>
+          {% for value, label in difficulty_choices %}<option value="{{ value }}" {% if selected.difficulty == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+        <select name="source">
+          <option value="">Источник</option>
+          {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
+        </select>
+      {% elif catalog_section == "activities" %}
+        <select name="source">
+          <option value="">Источник</option>
+          {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
+        </select>
+      {% endif %}
+      {% if staff_mode %}
+        <select name="staff_state">
+          <option value="all" {% if selected.staff_state == "all" %}selected{% endif %}>Staff: все</option>
+          <option value="published" {% if selected.staff_state == "published" %}selected{% endif %}>Staff: опубликованные</option>
+          <option value="draft" {% if selected.staff_state == "draft" %}selected{% endif %}>Staff: черновики</option>
+          <option value="no_link" {% if selected.staff_state == "no_link" %}selected{% endif %}>Staff: без ссылок/файлов</option>
+        </select>
+      {% endif %}
     </div>
-    <div class="chips test-task-chips">
-      {% for value, label in task_type_choices %}<span>{{ label }}</span>{% endfor %}
-    </div>
+    {% if catalog_section != "self_check" and catalog_section != "testing" and catalog_section != "activities" %}
+      <div class="chips test-task-chips">
+        {% for value, label in task_type_choices %}<span>{{ label }}</span>{% endfor %}
+      </div>
+    {% endif %}
   </form>
-  <p class="result-note">Найдено: {{ total_count }} тестов</p>
+  <p class="result-note">Найдено: {{ total_count }} {% if catalog_section == "activities" %}карточек{% else %}тестов{% endif %}</p>
   <div id="tests-grid" class="grid-4">
     {% include "tests_catalog/partials/tests_grid.html" with tests=tests total_count=total_count %}
   </div>

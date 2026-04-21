@@ -89,7 +89,6 @@ def _staff_axis_node_form_response(request, node: TimelineNode, is_create: bool)
             request,
             "axis/staff/partials/node_form.html",
             {"form": form, "node": node, "is_create": is_create},
-            status=422,
         )
     form = TimelineNodeStaffForm(instance=node)
     return render(

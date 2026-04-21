@@ -33,7 +33,7 @@
       closeDrawer();
       return;
     }
-    const trigger = event.target.closest("[hx-get^='/staff/materials/'], [hx-get^='/staff/events/'], [hx-get^='/staff/axis-nodes/']");
+    const trigger = event.target.closest("[hx-get^='/staff/materials/'], [hx-get^='/staff/events/'], [hx-get^='/staff/axis-nodes/'], [hx-get^='/staff/tests/']");
     if (trigger) openDrawer();
   });
 

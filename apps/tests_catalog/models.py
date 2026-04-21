@@ -5,6 +5,22 @@ from apps.catalog.models import Material
 from apps.common.choices import DIFFICULTY_CHOICES, EXAM_TYPE_CHOICES, TASK_TYPE_CHOICES
 from apps.common.models import Source, Tag, TimeStampedModel
 
+TEST_CATALOG_SECTION_CHOICES = [
+    ("testing", "Тестирования"),
+    ("self_check", "Викторины"),
+    ("activities", "Мероприятия"),
+]
+
+TEST_SUBJECT_CHOICES = [
+    ("history", "История"),
+    ("social", "Обществознание"),
+]
+
+HISTORY_SUBSECTION_CHOICES = [
+    ("xvii", "История 17 века"),
+    ("xix", "История 19 века"),
+]
+
 
 class TestItem(TimeStampedModel):
     title = models.CharField(max_length=255)
@@ -14,6 +30,9 @@ class TestItem(TimeStampedModel):
     external_url = models.URLField(blank=True)
     primary_file = models.FileField(upload_to="tests/files/", blank=True, null=True)
     cover_image = models.ImageField(upload_to="tests/covers/", blank=True, null=True)
+    catalog_section = models.CharField(max_length=20, choices=TEST_CATALOG_SECTION_CHOICES, default="testing")
+    subject = models.CharField(max_length=20, choices=TEST_SUBJECT_CHOICES, default="history")
+    history_subsection = models.CharField(max_length=10, choices=HISTORY_SUBSECTION_CHOICES, blank=True)
     exam_type = models.CharField(max_length=32, choices=EXAM_TYPE_CHOICES, default="school_trainer")
     task_type = models.CharField(max_length=32, choices=TASK_TYPE_CHOICES, default="mixed")
     difficulty = models.CharField(max_length=16, choices=DIFFICULTY_CHOICES, default="medium")

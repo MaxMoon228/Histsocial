@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Материалы — Истобщество{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/textbooks.css' %}">{% endblock %}
+{% block body_class %}materials-page{% endblock %}
+{% block content %}
+<section class="textbooks-split-screen">
+  <a class="textbook-split-card textbook-world" href="/world/">
+    <span>Всеобщая история</span>
+    <small>Материалы по мировой истории</small>
+  </a>
+  <a class="textbook-split-card textbook-russia" href="/russia/">
+    <span>История России</span>
+    <small>Периоды и ключевые события России</small>
+  </a>
+  <a class="textbook-split-card textbook-social" href="/social/">
+    <span>Обществознание</span>
+    <small>Экономика, право, политика и общество</small>
+  </a>
+</section>
+{% endblock %}

@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("materials/", views.materials, name="materials"),
+    path("textbooks/", views.textbooks, name="textbooks"),
     path("about/", views.about, name="about"),
     path("search/", views.search_results, name="search"),
     path("htmx/search-suggest/", views.search_suggest, name="search_suggest"),

@@ -20,42 +20,26 @@
       <p>Запустите импорт командой <code>python manage.py sync_history_calendar --pages 3 --with-details</code>. После синхронизации события появятся в календаре.</p>
     </article>
   {% endif %}
-  <div class="calendar-top-switch">
-    <a class="{% if mode == 'today' %}is-active{% endif %}" href="/calendar/?mode=today&day={{ selected_date.day }}&month={{ selected_date.month }}&year={{ selected_date.year }}&scope={{ scope }}&event_type={{ event_type }}">Сегодня</a>
-    <a class="{% if mode == 'week' %}is-active{% endif %}" href="/calendar/?mode=week&day={{ selected_date.day }}&month={{ selected_date.month }}&year={{ selected_date.year }}&scope={{ scope }}&event_type={{ event_type }}">Неделя</a>
-    <a class="{% if mode == 'month' %}is-active{% endif %}" href="/calendar/?mode=month&day={{ selected_date.day }}&month={{ selected_date.month }}&year={{ selected_date.year }}&scope={{ scope }}&event_type={{ event_type }}">Месяц</a>
-  </div>
-  <form
-    id="calendar-filter-form"
-    class="filter-row"
-    hx-get="/htmx/calendar/day/?mode={{ mode }}&day={{ selected_date.day }}&month={{ selected_date.month }}&year={{ selected_date.year }}"
-    hx-target="#calendar-events-list"
-    hx-trigger="change"
-  >
-    <select name="scope">
-      <option value="">Область</option>
-      <option value="russia" {% if scope == 'russia' %}selected{% endif %}>Россия</option>
-      <option value="world" {% if scope == 'world' %}selected{% endif %}>Мир</option>
-      <option value="both" {% if scope == 'both' %}selected{% endif %}>Все</option>
-    </select>
-    <select name="event_type">
-      <option value="">Тип события</option>
-      <option value="war" {% if event_type == 'war' %}selected{% endif %}>Война</option>
-      <option value="birth" {% if event_type == 'birth' %}selected{% endif %}>Рождение</option>
-      <option value="death" {% if event_type == 'death' %}selected{% endif %}>Смерть</option>
-      <option value="reform" {% if event_type == 'reform' %}selected{% endif %}>Реформа</option>
-      <option value="culture" {% if event_type == 'culture' %}selected{% endif %}>Культура</option>
-      <option value="other" {% if event_type == 'other' %}selected{% endif %}>Другое</option>
-    </select>
-  </form>
   <div class="calendar-layout">
     <aside class="card calendar-grid">
-      <h3>{{ month_name }} {{ selected_date.year }}</h3>
+      <div class="calendar-month-nav">
+        {% if prev_month %}
+          <a href="/calendar/?month={{ prev_month }}&day=1" aria-label="Предыдущий месяц">←</a>
+        {% else %}
+          <span class="is-disabled">←</span>
+        {% endif %}
+        <h3>{{ month_name }} {{ calendar_year }}</h3>
+        {% if next_month %}
+          <a href="/calendar/?month={{ next_month }}&day=1" aria-label="Следующий месяц">→</a>
+        {% else %}
+          <span class="is-disabled">→</span>
+        {% endif %}
+      </div>
       {% for week in month_days %}
         <div class="calendar-week">
           {% for d in week %}
             {% if d %}
-              <a href="/calendar/?mode={{ mode }}&year={{ selected_date.year }}&month={{ selected_date.month }}&day={{ d }}&scope={{ scope }}&event_type={{ event_type }}" class="{% if d == selected_date.day %}active{% endif %}">{{ d }}</a>
+              <a href="/calendar/?month={{ selected_month }}&day={{ d }}" class="{% if d == selected_day %}active{% endif %} {% if d in days_with_events %}has-event{% endif %}">{{ d }}</a>
             {% else %}
               <span></span>
             {% endif %}
@@ -65,11 +49,16 @@
     </aside>
     <section class="calendar-events">
       <div class="toolbar">
-        <h3>События {{ selected_date.day }} {{ month_name }}</h3>
-        <span class="events-count">{{ events|length }} событий</span>
+        <h3>События {{ selected_label }}</h3>
+        <div class="events-toolbar-actions">
+          {% if not is_today_selected %}
+            <a class="btn btn-outline btn-small" href="/calendar/?month={{ today_month }}&day={{ today_day }}">Сегодня</a>
+          {% endif %}
+          <span class="events-count">{{ events|length }} событий</span>
+        </div>
       </div>
       <div id="calendar-events-list">
-        {% include "events/partials/event_list.html" with events=events selected_date=selected_date %}
+        {% include "events/partials/event_list.html" with events=events %}
       </div>
     </section>
   </div>

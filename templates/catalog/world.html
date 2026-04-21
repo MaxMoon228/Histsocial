@@ -3,16 +3,15 @@
 {% block title %}Всеобщая история — Истобщество{% endblock %}
 {% block page_css %}<link rel="stylesheet" href="{% static 'css/pages/world.css' %}">{% endblock %}
 {% block content %}
-<section class="container section">
-  {% include "includes/components/breadcrumbs.html" with current="Всеобщая история" %}
-  <div class="page-head">
-    <div>
-      <p class="section-label">Каталог</p>
-      <h1>Всеобщая история</h1>
-      <p>Учебные материалы, уроки и цифровые коллекции по всемирной истории</p>
-    </div>
-    <div class="counter-badge"><strong>{{ total_count }}</strong> материалов</div>
+<section class="hero hero-dark world-hero">
+  <div class="container">
+    {% include "includes/components/breadcrumbs.html" with current="Всеобщая история" %}
+    <p class="section-label">Каталог</p>
+    <h1>Всеобщая история</h1>
+    <p>От Древнего мира до новейшего времени — учебники, уроки и цифровые коллекции</p>
   </div>
+</section>
+<section class="container section">
   {% if request.user.is_authenticated and request.user.is_staff %}
     <div class="staff-section-toolbar">
       <button class="btn" hx-get="/staff/materials/create/?section=world" hx-target="#staff-editor-body">Добавить</button>
@@ -27,6 +26,11 @@
     </div>
   {% endif %}
   <form class="filter-form" method="get" hx-get="/htmx/world/filter/" hx-target="#world-grid" hx-trigger="change delay:200ms, keyup changed delay:300ms from:input[name='q']">
+    <div class="period-tabs">
+      {% for period in period_tabs %}
+        <button type="submit" name="quick" value="{{ period }}" class="{% if selected.quick == period or not selected.quick and forloop.first %}is-active{% endif %}">{{ period }}</button>
+      {% endfor %}
+    </div>
     <div class="search-form">
       <input type="text" name="q" value="{{ selected.q }}" placeholder="Поиск по названию...">
       <button type="submit" class="btn btn-outline">Фильтры</button>
@@ -60,6 +64,7 @@
         </select>
       {% endif %}
     </div>
+    <input type="hidden" name="quick" value="{{ selected.quick }}">
   </form>
   <div id="world-grid" class="grid-4">
     {% include "catalog/partials/materials_grid.html" with materials=materials total_count=total_count %}

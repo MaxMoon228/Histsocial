@@ -9,11 +9,6 @@
     <p class="section-label">Каталог</p>
     <h1>История России</h1>
     <p>От Древней Руси до современности — учебники, уроки и цифровые коллекции</p>
-    <div class="chips chips-dark">
-      {% for period in period_tabs|slice:":4" %}
-        <a href="/russia/?quick={{ period|urlencode }}" class="{% if selected.quick == period %}is-active{% endif %}">{{ period }}</a>
-      {% endfor %}
-    </div>
   </div>
 </section>
 <section class="container section">
@@ -65,6 +60,7 @@
         </select>
       {% endif %}
     </div>
+    <input type="hidden" name="quick" value="{{ selected.quick }}">
   </form>
   <p class="result-note">Показано {{ total_count }} из {{ total_count }} материалов</p>
   <div id="russia-grid" class="grid-4">

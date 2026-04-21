@@ -49,6 +49,10 @@ class HistoricalEventStaffForm(forms.ModelForm):
             "related_tests": forms.SelectMultiple(),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["slug"].required = False
+
     def clean(self):
         cleaned = super().clean()
         day = cleaned.get("day")

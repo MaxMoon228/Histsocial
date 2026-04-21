@@ -13,7 +13,7 @@
   </div>
   <div class="period-tabs">
     <a class="{% if active_tab == 'all' %}is-active{% endif %}" href="/favorites/?tab=all">Все</a>
-    <a class="{% if active_tab == 'materials' %}is-active{% endif %}" href="/favorites/?tab=materials">Учебники</a>
+    <a class="{% if active_tab == 'materials' %}is-active{% endif %}" href="/favorites/?tab=materials">Материалы</a>
     <a class="{% if active_tab == 'tests' %}is-active{% endif %}" href="/favorites/?tab=tests">Тесты</a>
     <a class="{% if active_tab == 'events' %}is-active{% endif %}" href="/favorites/?tab=events">События</a>
     <a class="{% if active_tab == 'topics' %}is-active{% endif %}" href="/favorites/?tab=topics">Темы</a>
@@ -28,7 +28,7 @@
   {% else %}
     <p class="section-label">Последние сохранённые</p>
     {% if active_tab == 'all' or active_tab == 'materials' %}
-      <h2>Учебники</h2>
+      <h2>Материалы</h2>
       <div class="grid-4">{% for material in materials %}{% include "includes/components/material_card.html" %}{% endfor %}</div>
     {% endif %}
     {% if active_tab == 'all' or active_tab == 'tests' %}

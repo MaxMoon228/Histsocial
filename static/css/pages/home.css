@@ -1,33 +1,102 @@
-.home-hero { min-height: 540px; display: flex; align-items: center; }
+.home-hero {
+  min-height: 540px;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(180deg, #f6f8fb 0%, #eef2f7 100%);
+  color: var(--text-primary);
+}
 .home-hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 24px;
+  gap: 10px;
   align-items: start;
 }
 .hero-content { max-width: 920px; }
-.hero-subtitle { font-size: 1.25rem; color: #c8d0db; max-width: 760px; }
-.hero-search-wrap { max-width: 760px; margin-top: 18px; }
+.home-hero .hero-badge {
+  background: #e6ebf2;
+  color: #4b5d74;
+}
+.home-hero .hero-subtitle { font-size: 1.25rem; color: #556579; max-width: 760px; }
+.hero-search-wrap { max-width: 680px; margin-top: 18px; }
 .home-hero .search-form input { background: #fffcf5; font-size: 1.15rem; padding: 15px 18px; }
 .home-hero .search-form .btn { padding: 12px 30px; }
 .section-head { border-top: 1px solid #ede2cf; }
 .author-card {
-  background: rgba(247, 253, 255, 0.1);
-  border: 1px solid rgba(178, 203, 223, 0.4);
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
   border-radius: 18px;
   padding: 18px;
-  color: #e4edf6;
+  color: var(--text-primary);
+  margin-left: -42px;
+}
+.author-card-with-photo {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+.author-photo-wrap {
+  margin-bottom: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #dbe4ee;
+  background: #f3f6fa;
+  padding: 3px;
+  justify-self: start;
+  margin-left: -6px;
+}
+.author-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+.author-content {
+  min-width: 0;
+}
+.author-content p {
+  margin: 0 0 6px;
+  font-size: 0.89rem;
+  line-height: 1.28;
+}
+.author-content .section-label {
+  margin-bottom: 4px;
+  font-size: 0.68rem;
+}
+.author-content p strong {
+  font-size: 0.96rem;
+  line-height: 1.2;
 }
 .author-card p {
-  color: #d9e5f2;
+  color: #4f5f73;
 }
 .author-card .section-label {
-  color: #9ecad5;
+  color: #6b7d94;
   margin-bottom: 10px;
 }
 
 @media (max-width: 1279px) {
   .home-hero-grid {
     grid-template-columns: 1fr;
+  }
+  .author-card {
+    margin-left: 0;
+  }
+  .author-card-with-photo {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+  .author-photo-wrap {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .author-card-with-photo {
+    grid-template-columns: 1fr;
+  }
+  .author-photo-wrap {
+    max-width: 220px;
+    margin: 0 auto;
   }
 }

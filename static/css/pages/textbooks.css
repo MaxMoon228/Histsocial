@@ -1,0 +1,76 @@
+.textbooks-split-screen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-height: calc(100vh - 74px);
+  border-top: 1px solid #e8dbc8;
+}
+
+.materials-page .main-content {
+  min-height: calc(100vh - 74px);
+}
+
+.materials-page .site-footer {
+  margin-top: 0;
+}
+
+.textbook-split-card {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 28px 22px;
+  text-align: center;
+  color: #fff;
+  border-right: 1px solid rgba(255, 255, 255, 0.22);
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.textbook-split-card:last-child {
+  border-right: 0;
+}
+
+.textbook-split-card:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.textbook-split-card span {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.textbook-split-card small {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.textbook-world {
+  background: linear-gradient(165deg, #702844 0%, #8a2f47 50%, #513f90 100%);
+}
+
+.textbook-russia {
+  background: linear-gradient(165deg, #8f6312 0%, #a67b1c 48%, #c99b34 100%);
+}
+
+.textbook-social {
+  background: linear-gradient(165deg, #1f5e6f 0%, #276d68 52%, #2f8376 100%);
+}
+
+@media (max-width: 1024px) {
+  .textbooks-split-screen {
+    min-height: calc(100vh - 62px);
+    grid-template-columns: 1fr;
+  }
+
+  .textbook-split-card {
+    min-height: 220px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .textbook-split-card:last-child {
+    border-bottom: 0;
+  }
+}

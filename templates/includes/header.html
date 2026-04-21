@@ -9,12 +9,12 @@
     </a>
     <nav class="main-nav">
       <a class="{% if request.path == '/' %}is-active{% endif %}" href="/">Главная</a>
-      <a class="{% if request.path == '/world/' %}is-active{% endif %}" href="/world/">Всеобщая история</a>
-      <a class="{% if request.path == '/russia/' %}is-active{% endif %}" href="/russia/">История России</a>
-      <a class="{% if request.path == '/social/' %}is-active{% endif %}" href="/social/">Обществознание</a>
+      <a class="{% if request.path == '/materials/' or request.path == '/textbooks/' or request.path == '/world/' or request.path == '/russia/' or request.path == '/social/' %}is-active{% endif %}" href="/materials/">Материалы</a>
       <a class="{% if request.path == '/tests/' %}is-active{% endif %}" href="/tests/">Тестирования</a>
+      <a class="{% if request.path == '/self-check/' %}is-active{% endif %}" href="/self-check/">Викторины</a>
+      <a class="{% if request.path == '/activities/' %}is-active{% endif %}" href="/activities/">Мероприятия</a>
       <a class="{% if request.path == '/calendar/' %}is-active{% endif %}" href="/calendar/">Календарь</a>
-      <a class="{% if request.path == '/about/' %}is-active{% endif %}" href="/about/">О проекте</a>
+      <a class="{% if request.path == '/about/' %}is-active{% endif %}" href="/about/">Полезная информация</a>
     </nav>
     <div class="header-actions">
       <a class="btn btn-axis" href="/axis/">Историческая ось</a>

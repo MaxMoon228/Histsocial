@@ -1,0 +1,73 @@
+<form
+  method="post"
+  enctype="multipart/form-data"
+  class="staff-material-form"
+  hx-post="{% if is_create %}/staff/tests/create/{% else %}/staff/tests/{{ test.id }}/edit/{% endif %}"
+  hx-target="#staff-editor-body"
+  data-staff-form
+>
+  {% csrf_token %}
+  <div class="staff-form-scroll">
+    <h3>Основное</h3>
+    {% if form.non_field_errors %}<div class="staff-error">{{ form.non_field_errors }}</div>{% endif %}
+    {% if form.errors %}
+      <div class="staff-error">
+        {% for field in form %}
+          {% for err in field.errors %}
+            <div>{{ field.label }}: {{ err }}</div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+    <label>Заголовок *</label>{{ form.title }}
+    <label>Slug</label>{{ form.slug }}
+    <label>Краткое описание</label>{{ form.short_description }}
+
+    <h3>Раздел</h3>
+    <label>Раздел</label>{{ form.catalog_section }}
+    {% if not is_activities %}
+      <h3>Подразделы</h3>
+      <label>Предмет</label>{{ form.subject }}
+      <label>Подраздел истории</label>{{ form.history_subsection }}
+    {% endif %}
+
+    <h3>Параметры карточки</h3>
+    <label>Источник</label>{{ form.source }}
+    <label>Внешняя ссылка</label>{{ form.external_url }}
+    <label>Основной файл</label>{{ form.primary_file }}
+    {% if test.primary_file %}<a href="{{ test.primary_file.url }}" target="_blank" rel="noopener">Текущий файл</a>{% endif %}
+    <label>Обложка</label>{{ form.cover_image }}
+    {% if test.cover_image %}<img src="{{ test.cover_image.url }}" alt="" class="staff-image-preview">{% endif %}
+
+    {% if not is_activities %}
+      <h3>Учебные атрибуты</h3>
+      <label>Тип теста</label>{{ form.exam_type }}
+      <label>Тип задания</label>{{ form.task_type }}
+      <label>Сложность</label>{{ form.difficulty }}
+      <label>Длительность (мин)</label>{{ form.duration_minutes }}
+      <label>Бейдж</label>{{ form.badge_text }}
+    {% endif %}
+
+    {% if not is_activities %}
+      <h3>Связи</h3>
+      <label>Теги</label>{{ form.tags }}
+      <label>Новые теги</label>{{ form.new_tags }}
+      <label>Связанные материалы</label>{{ form.related_materials }}
+    {% endif %}
+
+    <h3>Публикация</h3>
+    <label>Опубликовано {{ form.is_published }}</label>
+    <label>Внешний ресурс {{ form.is_external_resource }}</label>
+    <label>Порядок сортировки</label>{{ form.sort_order }}
+  </div>
+  <div class="staff-drawer-footer">
+    <button class="btn" type="submit">Сохранить</button>
+    <button class="btn btn-outline" type="submit" name="continue_edit" value="1">Сохранить и продолжить</button>
+    {% if test.id %}
+      <button type="button" class="btn btn-outline" hx-post="/staff/tests/{{ test.id }}/duplicate/" hx-confirm="Создать копию карточки?" hx-swap="none">Дублировать</button>
+      <button type="button" class="btn btn-outline" hx-post="/staff/tests/{{ test.id }}/delete/" hx-confirm="Удалить карточку?" hx-swap="none">Удалить</button>
+      <a class="btn btn-outline" href="/admin/tests_catalog/testitem/{{ test.id }}/change/" target="_blank" rel="noopener">В Django admin</a>
+    {% endif %}
+    <button type="button" class="btn btn-outline" data-staff-close>Отменить</button>
+  </div>
+</form>

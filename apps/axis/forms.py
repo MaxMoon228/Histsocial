@@ -36,6 +36,10 @@ class TimelineNodeStaffForm(forms.ModelForm):
             "accent_color": forms.TextInput(attrs={"type": "color"}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["slug"].required = False
+
     def clean(self):
         cleaned = super().clean()
         start_year = cleaned.get("start_year")

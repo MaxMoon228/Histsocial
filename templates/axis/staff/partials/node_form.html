@@ -9,8 +9,17 @@
   <div class="staff-form-scroll">
     <h3>Основное</h3>
     {% if form.non_field_errors %}<div class="staff-error">{{ form.non_field_errors }}</div>{% endif %}
+    {% if form.errors %}
+      <div class="staff-error">
+        {% for field in form %}
+          {% for err in field.errors %}
+            <div>{{ field.label }}: {{ err }}</div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
     <label>Заголовок *</label>{{ form.title }}
-    <label>Slug *</label>{{ form.slug }}
+    <label>Slug</label>{{ form.slug }}
     <label>Подзаголовок</label>{{ form.subtitle }}
     <label>Описание</label>{{ form.description }}
     <label>Область</label>{{ form.scope }}
