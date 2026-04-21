@@ -17,8 +17,8 @@ TEST_SUBJECT_CHOICES = [
 ]
 
 HISTORY_SUBSECTION_CHOICES = [
-    ("xvii", "История 17 века"),
-    ("xix", "История 19 века"),
+    ("xvii", "История XVII века"),
+    ("xix", "История XIX века"),
 ]
 
 

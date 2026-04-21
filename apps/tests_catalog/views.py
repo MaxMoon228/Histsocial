@@ -71,7 +71,7 @@ def _catalog_page(request, section, title, description):
         "task_type_choices": TASK_TYPE_CHOICES,
         "difficulty_choices": DIFFICULTY_CHOICES,
         "subject_choices": [("history", "История"), ("social", "Обществознание")],
-        "history_subsections": [("xvii", "История 17 века"), ("xix", "История 19 века")],
+        "history_subsections": [("xvii", "История XVII века"), ("xix", "История XIX века")],
         "selected": selected,
         "catalog_section": section,
         "section_title": title,
