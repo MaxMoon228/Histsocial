@@ -11,8 +11,8 @@ if [ "$DJANGO_SETTINGS_MODULE" = "config.settings.prod" ] && [ -z "${DATABASE_UR
     export DATABASE_URL="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT:-5432}/${DB_NAME}"
     echo "WARN: DATABASE_URL was empty; built from DB_* variables." >&2
   else
-    export DATABASE_URL="sqlite:////app/db.sqlite3"
-    echo "WARN: DATABASE_URL and usable DB_* are missing; falling back to SQLite at /app/db.sqlite3." >&2
+    export DATABASE_URL="sqlite:///${PWD}/db.sqlite3"
+    echo "WARN: DATABASE_URL and usable DB_* are missing; falling back to SQLite at ${PWD}/db.sqlite3." >&2
   fi
 fi
 
