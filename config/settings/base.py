@@ -13,7 +13,9 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("SECRET_KEY", default="unsafe-dev-key")
 DEBUG = env("DEBUG")
-ALLOWED_HOSTS = [host.strip() for host in env("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",") if host.strip()]
+ALLOWED_HOSTS = [host.strip() for host in env("ALLOWED_HOSTS", default="localhost,127.0.0.1,liceumhistory.ru").split(",") if host.strip()]
+if "liceumhistory.ru" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("liceumhistory.ru")
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in env("CSRF_TRUSTED_ORIGINS", default="http://localhost,http://127.0.0.1").split(",")
