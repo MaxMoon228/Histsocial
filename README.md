@@ -41,10 +41,10 @@ docker compose up --build
 
 После старта открыть: [http://localhost](http://localhost)
 
-## Deploy на Render через Dockerfile
+## Deploy на Render (полностью рабочий backend)
 
 В репозитории добавлен `render.yaml` (Blueprint):
-- Web service (`env: docker`, сборка из корневого `Dockerfile`)
+- Web service (Django + Gunicorn)
 - PostgreSQL (Render DB)
 - Cron job для ежедневного импорта календаря
 
@@ -53,14 +53,7 @@ docker compose up --build
 2. **New +** → **Blueprint**.
 3. Выберите репозиторий `MaxMoon228/Histsocial`.
 4. Подтвердите создание сервисов из `render.yaml`.
-5. После первого деплоя откройте web-сервис и проверьте переменные окружения.
-6. Убедитесь, что задано:
-   - `DJANGO_SETTINGS_MODULE=config.settings.prod`
-   - `DATABASE_URL` (связан с Render PostgreSQL)
-7. Выполните `Manual Deploy`.
-8. Проверьте:
-   - `/health/` → `200`
-   - `/` → открывается без `500`
+5. После первого деплоя откройте URL web-сервиса вида `https://histsocial-web.onrender.com`.
 
 Что запускается на web старте:
 - `migrate`
@@ -91,7 +84,6 @@ python manage.py rebuild_event_dates
 
 - `DJANGO_SETTINGS_MODULE` (`config.settings.dev` / `config.settings.prod`)
 - `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`
-- `DATABASE_URL` (приоритетный вариант для production/Render)
 - `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`
 - `SUPERUSER_USERNAME`, `SUPERUSER_EMAIL`, `SUPERUSER_PASSWORD`
 - `DEFAULT_STAFF_USERNAME`, `DEFAULT_STAFF_PASSWORD`, `DEFAULT_STAFF_EMAIL`

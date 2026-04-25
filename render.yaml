@@ -1,11 +1,11 @@
 services:
   - type: web
     name: histsocial-web
-    env: docker
+    env: python
     plan: free
     autoDeploy: true
-    dockerfilePath: ./Dockerfile
-    healthCheckPath: /health/
+    buildCommand: pip install -r requirements/prod.txt
+    startCommand: bash scripts/render_start.sh
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: config.settings.prod
