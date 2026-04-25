@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseBadRequest
+from django.conf import settings
 
 from apps.axis.models import TimelineNode
 from apps.catalog.models import Material
@@ -44,11 +45,14 @@ def favorites_toggle(request):
         current.remove(item_id)
     else:
         current.append(item_id)
+        if request.session.session_key is None:
+            request.session.save()
         FavoriteSessionItem.objects.get_or_create(
             session_key=request.session.session_key or "",
             content_type=item_type,
             object_id=item_id,
         )
+    request.session[settings.FAVORITES_SESSION_KEY] = favorites
     request.session.modified = True
     return render(
         request,

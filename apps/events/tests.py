@@ -134,7 +134,7 @@ class CalendarViewTests(TestCase):
         )
 
     def test_calendar_page_status_ok(self):
-        response = self.client.get("/calendar/")
+        response = self.client.get("/calendar/?month=4&day=12")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Событие для календаря")
 
