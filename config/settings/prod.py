@@ -5,7 +5,9 @@ DEBUG = False
 if "whitenoise.middleware.WhiteNoiseMiddleware" not in MIDDLEWARE:
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# Use non-manifest storage in production to avoid runtime 500 when a static
+# reference is missing from manifest after deploy. This keeps pages available.
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SESSION_COOKIE_SECURE = True
