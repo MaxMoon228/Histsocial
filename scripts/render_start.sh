@@ -7,7 +7,13 @@ export DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE:-config.settings.prod}"
 # DATABASE_URL can be provided directly (Render blueprint) or derived from
 # DB_* variables in settings; do not hard-fail startup here.
 if [ "$DJANGO_SETTINGS_MODULE" = "config.settings.prod" ] && [ -z "${DATABASE_URL:-}" ]; then
-  echo "WARN: DATABASE_URL is empty; relying on DB_* environment variables." >&2
+  if [ -n "${DB_HOST:-}" ] && [ "$DB_HOST" != "db" ] && [ -n "${DB_NAME:-}" ] && [ -n "${DB_USER:-}" ] && [ -n "${DB_PASSWORD:-}" ]; then
+    export DATABASE_URL="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT:-5432}/${DB_NAME}"
+    echo "WARN: DATABASE_URL was empty; built from DB_* variables." >&2
+  else
+    export DATABASE_URL="sqlite:////tmp/histsocial.sqlite3"
+    echo "WARN: DATABASE_URL and usable DB_* are missing; falling back to SQLite at /tmp/histsocial.sqlite3." >&2
+  fi
 fi
 
 python manage.py migrate --noinput
