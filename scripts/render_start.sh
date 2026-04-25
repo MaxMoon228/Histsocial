@@ -4,11 +4,10 @@ set -e
 # Keep startup commands and gunicorn on the same Django settings module.
 export DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE:-config.settings.prod}"
 
-# In production we must never silently boot without a real database URL,
-# otherwise bootstrap runs against SQLite and requests fail at runtime.
+# DATABASE_URL can be provided directly (Render blueprint) or derived from
+# DB_* variables in settings; do not hard-fail startup here.
 if [ "$DJANGO_SETTINGS_MODULE" = "config.settings.prod" ] && [ -z "${DATABASE_URL:-}" ]; then
-  echo "ERROR: DATABASE_URL is not set for production startup." >&2
-  exit 1
+  echo "WARN: DATABASE_URL is empty; relying on DB_* environment variables." >&2
 fi
 
 python manage.py migrate --noinput
