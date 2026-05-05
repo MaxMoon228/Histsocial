@@ -120,7 +120,7 @@ class TestItemStaffForm(forms.ModelForm):
         if subject != "history":
             cleaned["history_subsection"] = ""
         elif subject == "history" and not history_subsection:
-            self.add_error("history_subsection", "Для истории выберите подраздел (XVII или XIX век).")
+            self.add_error("history_subsection", "Для истории выберите подраздел (XVI, XVII, XVIII, XIX или XX век).")
         return cleaned
 
     def save(self, commit=True):

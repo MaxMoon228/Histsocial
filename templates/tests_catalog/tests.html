@@ -42,8 +42,11 @@
           </select>
           <select name="history_subsection">
             <option value="">Подраздел истории</option>
+            <option value="xvi" {% if selected.history_subsection == "xvi" %}selected{% endif %}>История XVI века</option>
             <option value="xvii" {% if selected.history_subsection == "xvii" %}selected{% endif %}>История XVII века</option>
+            <option value="xviii" {% if selected.history_subsection == "xviii" %}selected{% endif %}>История XVIII века</option>
             <option value="xix" {% if selected.history_subsection == "xix" %}selected{% endif %}>История XIX века</option>
+            <option value="xx" {% if selected.history_subsection == "xx" %}selected{% endif %}>История XX века</option>
           </select>
         {% endif %}
         {% if catalog_section != "testing" and catalog_section != "activities" %}
