@@ -28,53 +28,57 @@
   >
     <div class="search-form">
       <input type="text" name="q" value="{{ selected.q }}" placeholder="Поиск по теме или названию...">
-      <button type="submit" class="btn btn-outline">Фильтры</button>
-    </div>
-    <div class="filter-row">
-      {% if catalog_section != "activities" %}
-        <select name="subject">
-          <option value="">Предмет</option>
-          <option value="history" {% if selected.subject == "history" %}selected{% endif %}>История</option>
-          <option value="social" {% if selected.subject == "social" %}selected{% endif %}>Обществознание</option>
-        </select>
-        <select name="history_subsection">
-          <option value="">Подраздел истории</option>
-          <option value="xvii" {% if selected.history_subsection == "xvii" %}selected{% endif %}>История XVII века</option>
-          <option value="xix" {% if selected.history_subsection == "xix" %}selected{% endif %}>История XIX века</option>
-        </select>
-      {% endif %}
-      {% if catalog_section != "testing" and catalog_section != "activities" %}
-        <select name="exam_type">
-          <option value="">Тип теста</option>
-          {% for value, label in exam_type_choices %}<option value="{{ value }}" {% if selected.exam_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-        </select>
-        <select name="task_type">
-          <option value="">Задание</option>
-          {% for value, label in task_type_choices %}<option value="{{ value }}" {% if selected.task_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-        </select>
-        <select name="difficulty">
-          <option value="">Сложность</option>
-          {% for value, label in difficulty_choices %}<option value="{{ value }}" {% if selected.difficulty == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-        </select>
-        <select name="source">
-          <option value="">Источник</option>
-          {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
-        </select>
-      {% elif catalog_section == "activities" %}
-        <select name="source">
-          <option value="">Источник</option>
-          {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
-        </select>
-      {% endif %}
-      {% if staff_mode %}
-        <select name="staff_state">
-          <option value="all" {% if selected.staff_state == "all" %}selected{% endif %}>Staff: все</option>
-          <option value="published" {% if selected.staff_state == "published" %}selected{% endif %}>Staff: опубликованные</option>
-          <option value="draft" {% if selected.staff_state == "draft" %}selected{% endif %}>Staff: черновики</option>
-          <option value="no_link" {% if selected.staff_state == "no_link" %}selected{% endif %}>Staff: без ссылок/файлов</option>
-        </select>
+      {% if catalog_section != "self_check" %}
+        <button type="submit" class="btn btn-outline">Фильтры</button>
       {% endif %}
     </div>
+    {% if catalog_section != "self_check" %}
+      <div class="filter-row">
+        {% if catalog_section != "activities" %}
+          <select name="subject">
+            <option value="">Предмет</option>
+            <option value="history" {% if selected.subject == "history" %}selected{% endif %}>История</option>
+            <option value="social" {% if selected.subject == "social" %}selected{% endif %}>Обществознание</option>
+          </select>
+          <select name="history_subsection">
+            <option value="">Подраздел истории</option>
+            <option value="xvii" {% if selected.history_subsection == "xvii" %}selected{% endif %}>История XVII века</option>
+            <option value="xix" {% if selected.history_subsection == "xix" %}selected{% endif %}>История XIX века</option>
+          </select>
+        {% endif %}
+        {% if catalog_section != "testing" and catalog_section != "activities" %}
+          <select name="exam_type">
+            <option value="">Тип теста</option>
+            {% for value, label in exam_type_choices %}<option value="{{ value }}" {% if selected.exam_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+          <select name="task_type">
+            <option value="">Задание</option>
+            {% for value, label in task_type_choices %}<option value="{{ value }}" {% if selected.task_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+          <select name="difficulty">
+            <option value="">Сложность</option>
+            {% for value, label in difficulty_choices %}<option value="{{ value }}" {% if selected.difficulty == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+          <select name="source">
+            <option value="">Источник</option>
+            {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
+          </select>
+        {% elif catalog_section == "activities" %}
+          <select name="source">
+            <option value="">Источник</option>
+            {% for source in sources %}<option value="{{ source.slug }}" {% if selected.source == source.slug %}selected{% endif %}>{{ source.name }}</option>{% endfor %}
+          </select>
+        {% endif %}
+        {% if staff_mode %}
+          <select name="staff_state">
+            <option value="all" {% if selected.staff_state == "all" %}selected{% endif %}>Staff: все</option>
+            <option value="published" {% if selected.staff_state == "published" %}selected{% endif %}>Staff: опубликованные</option>
+            <option value="draft" {% if selected.staff_state == "draft" %}selected{% endif %}>Staff: черновики</option>
+            <option value="no_link" {% if selected.staff_state == "no_link" %}selected{% endif %}>Staff: без ссылок/файлов</option>
+          </select>
+        {% endif %}
+      </div>
+    {% endif %}
     {% if catalog_section != "self_check" and catalog_section != "testing" and catalog_section != "activities" %}
       <div class="chips test-task-chips">
         {% for value, label in task_type_choices %}<span>{{ label }}</span>{% endfor %}
